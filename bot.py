@@ -1,4 +1,5 @@
-import discord, asyncio, os
+import discord, asyncio, os, re
+import modules.util
 
 client = discord.Client()
 
@@ -10,6 +11,11 @@ f.close()
 @client.event
 async def on_ready():
     print('Successfully logged in as {} (ID {}).'.format(client.user.name, client.user.id))
+
+@client.event
+async def on_message(message):
+    if re.search("^!ping", message.content):
+        await modules.util.ping(message, client)
 
 try:
     # If any background tasks need to run, start them here

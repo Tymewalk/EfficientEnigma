@@ -1,5 +1,5 @@
 import discord, asyncio, os, re
-import modules.util
+import modules.util, modules.dice
 
 client = discord.Client()
 
@@ -16,6 +16,8 @@ async def on_ready():
 async def on_message(message):
     if re.search("^!ping", message.content):
         await modules.util.ping(message, client)
+    if re.search("^!roll", message.content):
+        await modules.dice.roll(message, client)
 
 try:
     # If any background tasks need to run, start them here

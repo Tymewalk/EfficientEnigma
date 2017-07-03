@@ -20,6 +20,10 @@ async def roll(message, client):
     finally:
         pass
 
+    if amount < 1 or die_size < 1:
+        await client.send_message(message.channel, "{} Sorry, I can't roll nothing.".format(message.author.mention))
+        return
+
     roll_message = "{} Rolling {}d{} gives:\n".format(message.author.mention, amount, die_size)
 
     for i in range(amount):

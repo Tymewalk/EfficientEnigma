@@ -7,8 +7,8 @@ allowed_roles = []
 
 async def give_role(message, client):
     role_list = ""
-    for i in allowed_roles:
-        role_list += "{}, ".format(i)
+    for role in allowed_roles:
+        role_list += "{}, ".format(role)
     role_list = role_list[:-2]
     role_name = re.sub("^\![^\W]+ ", "", message.content)
     print("User wants {}".format(role_name))
@@ -30,8 +30,8 @@ async def give_role(message, client):
 
 async def remove_role(message, client):
     role_list = ""
-    for i in allowed_roles:
-        role_list += "{}, ".format(i)
+    for role in allowed_roles:
+        role_list += "{}, ".format(role)
     role_list = role_list[:-2]
     role_name = re.sub("^\![^\W]+ ", "", message.content)
     print("User wants {}".format(role_name))

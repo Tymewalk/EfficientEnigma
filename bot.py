@@ -1,5 +1,5 @@
 import discord, asyncio, os, re
-import modules.util, modules.dice
+import modules.util, modules.dice, modules.roles
 
 client = discord.Client()
 
@@ -18,6 +18,12 @@ async def on_message(message):
         await modules.util.ping(message, client)
     if re.search("^!roll", message.content):
         await modules.dice.roll(message, client)
+    if re.search("^!giverole", message.content):
+        await modules.roles.give_role(message, client)
+    if re.search("^!removerole", message.content):
+        await modules.roles.remove_role(message, client)
+    if re.search("^!listroles", message.content):
+        await modules.roles.list_roles(message, client)
 
 try:
     # If any background tasks need to run, start them here

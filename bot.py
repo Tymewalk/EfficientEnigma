@@ -22,6 +22,8 @@ async def on_message(message):
         await modules.roles.give_role(message, client)
     if re.search("^!removerole", message.content):
         await modules.roles.remove_role(message, client)
+    if re.search("^!listroles", message.content):
+        await modules.roles.list_roles(message, client)
 
 try:
     # If any background tasks need to run, start them here

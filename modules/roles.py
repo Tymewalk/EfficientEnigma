@@ -28,6 +28,13 @@ async def give_role(message, client):
         else:
             await client.send_message(message.channel, ":no_entry: That role is in the allowed roles list, but does not actually exist.\nPlease notify the bot admin.")
 
+async def list_roles(message, client):
+    roleList = ""
+    for role in allowedRoles:
+        roleList += "{}, ".format(i)
+    roleList = roleList[:-2]
+    await client.send_message(message.channel, "You can assign yourself any of the following:\n{}".format(roleList))
+
 async def remove_role(message, client):
     role_list = ""
     for role in allowed_roles:

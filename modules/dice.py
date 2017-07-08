@@ -2,6 +2,18 @@
 # For various commands using random numbers or items.
 import random
 
+eight_ball_phrases = [
+    # Positive
+    "Yes", "It is certain", "Of course", ":100:", "Definitely",
+    # Neutral
+    "Maybe", "Perhaps", "I'm not sure", "Reply hazy, ask again", "Who knows?",
+    # Negative
+    "No", "Of course not", "Never", "Absolutely not", "Not a chance"
+    ]
+
+async def magic_eight_ball(message, client):
+    await client.send_message(message.channel, "{} {}".format(message.author.mention, random.choice(eight_ball_phrases)))
+
 async def roll(message, client):
     args = message.content.split(sep=' ')
     # Ignore args[0] - it's !roll

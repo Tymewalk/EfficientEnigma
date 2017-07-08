@@ -24,6 +24,8 @@ async def on_message(message):
         await modules.roles.remove_role(message, client)
     if re.search("^!listroles", message.content):
         await modules.roles.list_roles(message, client)
+    if re.search("^!8ball", message.content):
+        await modules.dice.magic_eight_ball(message, client)
 
 try:
     # If any background tasks need to run, start them here

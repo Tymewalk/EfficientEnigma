@@ -18,6 +18,14 @@ f = open("{}/{}".format(os.path.dirname(os.path.realpath(__file__)), "token"))
 bot_token = f.read().rstrip().lstrip()
 f.close()
 
+help_command = str()
+# Loop through, list all the commands
+for command in command_table:
+    help_command += "{}, ".format(command)
+
+# Remove the final ", "
+help_command = help_command[:-2]
+
 @client.event
 async def on_ready():
     print('Successfully logged in as {} (ID {}).'.format(client.user.name, client.user.id))
@@ -29,6 +37,9 @@ async def on_message(message):
     for command in command_table:
         if re.search("^{}".format(command), message.content):
             await command_table[command](message, client)
+    # The exception is !help - this one gets generated automatically
+    if re.search("^!help", message.content):
+        await client.send_message(message.channel, "{} {}".format(message.author.mention, help_command))
 
 try:
     # If any background tasks need to run, start them here

@@ -14,18 +14,21 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+    # Utilities
     if re.search("^!ping", message.content):
         await modules.util.ping(message, client)
+    # Dice
     if re.search("^!roll", message.content):
         await modules.dice.roll(message, client)
+    if re.search("^!8ball", message.content):
+        await modules.dice.magic_eight_ball(message, client)
+    # Role Management
     if re.search("^!giverole", message.content):
         await modules.roles.give_role(message, client)
     if re.search("^!removerole", message.content):
         await modules.roles.remove_role(message, client)
     if re.search("^!listroles", message.content):
         await modules.roles.list_roles(message, client)
-    if re.search("^!8ball", message.content):
-        await modules.dice.magic_eight_ball(message, client)
 
 try:
     # If any background tasks need to run, start them here

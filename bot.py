@@ -1,5 +1,15 @@
 import discord, asyncio, os, re
+
+# This contains all the commands.
+# Commands are in the format of:
+# "command" : function
+command_table = dict()
+
 import modules.util, modules.dice, modules.roles
+
+modules.util.setup_command_table(command_table)
+
+print(command_table)
 
 client = discord.Client()
 
@@ -14,6 +24,9 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+    for command in command_table:
+        if re.search("^{}".format(command), message.content):
+            print("Hey, we got a {}!".format(command))
     # Utilities
     if re.search("^!ping", message.content):
         await modules.util.ping(message, client)

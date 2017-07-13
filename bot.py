@@ -8,6 +8,8 @@ command_table = dict()
 import modules.util, modules.dice, modules.roles
 
 modules.util.setup_command_table(command_table)
+modules.dice.setup_command_table(command_table)
+modules.roles.setup_command_table(command_table)
 
 print(command_table)
 
@@ -24,21 +26,11 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+    # Check everything against our command table.
+    # The modules specify what commands they run - so we just loop through and check
     for command in command_table:
         if re.search("^{}".format(command), message.content):
             await command_table[command](message, client)
-    # Dice
-    if re.search("^!roll", message.content):
-        await modules.dice.roll(message, client)
-    if re.search("^!8ball", message.content):
-        await modules.dice.magic_eight_ball(message, client)
-    # Role Management
-    if re.search("^!giverole", message.content):
-        await modules.roles.give_role(message, client)
-    if re.search("^!removerole", message.content):
-        await modules.roles.remove_role(message, client)
-    if re.search("^!listroles", message.content):
-        await modules.roles.list_roles(message, client)
 
 try:
     # If any background tasks need to run, start them here

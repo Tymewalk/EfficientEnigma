@@ -26,10 +26,7 @@ async def on_ready():
 async def on_message(message):
     for command in command_table:
         if re.search("^{}".format(command), message.content):
-            print("Hey, we got a {}!".format(command))
-    # Utilities
-    if re.search("^!ping", message.content):
-        await modules.util.ping(message, client)
+            await command_table[command](message, client)
     # Dice
     if re.search("^!roll", message.content):
         await modules.dice.roll(message, client)

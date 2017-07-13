@@ -30,7 +30,7 @@ async def give_role(message, client):
 
 async def list_roles(message, client):
     roleList = ""
-    for role in allowedRoles:
+    for role in allowed_roles:
         roleList += "{}, ".format(i)
     roleList = roleList[:-2]
     await client.send_message(message.channel, "You can assign yourself any of the following:\n{}".format(roleList))

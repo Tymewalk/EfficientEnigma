@@ -10,6 +10,10 @@ async def give_role(message, client):
     for role in allowed_roles:
         role_list += "{}, ".format(role)
     role_list = role_list[:-2]
+    if re.match("^\![^\W]+( |)+", message.content):
+        # Don't do anything if it's all whitespace
+        await client.send_message(message.channel, ":warning: Sorry, you forgot to specify a role. Available roles are:\n{}".format(role_list))
+        return
     role_name = re.sub("^\![^\W]+ ", "", message.content)
     print("User wants {}".format(role_name))
     if not role_name in allowed_roles:
@@ -40,6 +44,10 @@ async def remove_role(message, client):
     for role in allowed_roles:
         role_list += "{}, ".format(role)
     role_list = role_list[:-2]
+    if re.match("^\![^\W]+( |)+", message.content):
+        # Don't do anything if it's all whitespace
+        await client.send_message(message.channel, ":warning: Sorry, you forgot to specify a role. Available roles are:\n{}".format(role_list))
+        return
     role_name = re.sub("^\![^\W]+ ", "", message.content)
     print("User wants {}".format(role_name))
     if not role_name in allowed_roles:

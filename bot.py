@@ -11,8 +11,6 @@ modules.util.setup_command_table(command_table)
 modules.dice.setup_command_table(command_table)
 modules.roles.setup_command_table(command_table)
 
-print(command_table)
-
 client = discord.Client()
 
 f = open("{}/{}".format(os.path.dirname(os.path.realpath(__file__)), "token"))

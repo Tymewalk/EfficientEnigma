@@ -29,6 +29,7 @@ help_command = help_command[:-2]
 @client.event
 async def on_ready():
     print('Successfully logged in as {} (ID {}).'.format(client.user.name, client.user.id))
+    await client.change_presence(game=discord.Game(name="Try !help"))
 
 @client.event
 async def on_message(message):

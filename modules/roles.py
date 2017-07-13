@@ -57,3 +57,9 @@ async def remove_role(message, client):
                     await client.send_message(message.channel, ":warning: You don't have that role.")
         else:
             await client.send_message(message.channel, ":no_entry: That role is in the allowed roles list, but does not actually exist.\nPlease notify the bot admin.")
+
+# Add the commands to the global command table.
+def setup_command_table(table):
+    table["!giverole"] = give_role
+    table["!removerole"] = remove_role
+    table["!listroles"] = list_roles

@@ -43,3 +43,8 @@ async def roll(message, client):
         if not i + 1 == amount:
             roll_message += ", "
     await client.send_message(message.channel, roll_message)
+
+# Add the commands to the global command table.
+def setup_command_table(table):
+    table["!8ball"] = magic_eight_ball
+    table["!roll"] = roll

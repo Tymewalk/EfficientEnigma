@@ -5,7 +5,7 @@ import discord, asyncio, os, re
 # "command" : function
 command_table = dict()
 
-import modules.util, modules.dice, modules.roles
+import modules.util, modules.dice, modules.roles, modules.logging
 
 modules.util.setup_command_table(command_table)
 modules.dice.setup_command_table(command_table)
@@ -41,6 +41,14 @@ async def on_message(message):
     # The exception is !help - this one gets generated automatically
     if re.search("^!help", message.content):
         await client.send_message(message.channel, "{} {}".format(message.author.mention, help_command))
+
+@client.event
+async def on_message_edit(old, new):
+    await modules.logging.log_message_edit(client, old, new)
+    
+@client.event
+async def on_message_delete(message):
+    await modules.logging.log_message_delete(client, message)
 
 try:
     # If any background tasks need to run, start them here

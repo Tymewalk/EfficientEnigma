@@ -42,6 +42,10 @@ async def on_message(message):
     if re.search("^!help", message.content):
         await client.send_message(message.channel, "{} {}".format(message.author.mention, help_command))
 
+@client.event
+async def on_message_edit(old, new):
+    await modules.logging.log_message(client, old, new)
+
 try:
     # If any background tasks need to run, start them here
     client.run(bot_token)

@@ -5,7 +5,7 @@ import discord.utils, asyncio
 log_channel = "(set this)"
 
 async def log_message_edit(client, old, new):
-	await client.send_message(discord.utils.get(old.server.channels, name=log_channel, type=discord.ChannelType.text), "User {} edited a message:\nOld: {}\nNew: {}".format(str(old.author), old.content, new.content))
+	await client.send_message(discord.utils.get(old.server.channels, name=log_channel, type=discord.ChannelType.text), "User {} edited their message in {}:\nOld: {}\nNew: {}".format(str(old.author), str(old.channel), old.content, new.content))
 
 async def log_message_delete(client, message):
-	await client.send_message(discord.utils.get(message.server.channels, name=log_channel, type=discord.ChannelType.text), "User {} deleted a message:\n{}\n".format(str(message.author), message.content))
+	await client.send_message(discord.utils.get(message.server.channels, name=log_channel, type=discord.ChannelType.text), "User {} deleted their message in {}:\n{}\n".format(str(message.author), str(message.channel), message.content))

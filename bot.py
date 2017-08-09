@@ -5,7 +5,7 @@ import discord, asyncio, os, re
 # "command" : function
 command_table = dict()
 
-import modules.util, modules.dice, modules.roles
+import modules.util, modules.dice, modules.roles, modules.logging
 
 modules.util.setup_command_table(command_table)
 modules.dice.setup_command_table(command_table)

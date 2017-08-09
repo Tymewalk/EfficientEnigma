@@ -44,7 +44,11 @@ async def on_message(message):
 
 @client.event
 async def on_message_edit(old, new):
-    await modules.logging.log_message(client, old, new)
+    await modules.logging.log_message_edit(client, old, new)
+    
+@client.event
+async def on_message_delete(message):
+    await modules.logging.log_message_delete(client, message)
 
 try:
     # If any background tasks need to run, start them here

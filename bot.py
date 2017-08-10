@@ -1,4 +1,4 @@
-import discord, asyncio, os, re
+import discord, asyncio, os, re, json
 
 # This contains all the commands.
 # Commands are in the format of:
@@ -13,10 +13,11 @@ modules.roles.setup_command_table(command_table)
 
 client = discord.Client()
 
-f = open("{}/{}".format(os.path.dirname(os.path.realpath(__file__)), "token"))
+f = open("{}/{}".format(os.path.dirname(os.path.realpath(__file__)), "settings.json"))
 # Discord tokens have no whitespace, remove any that might've slipped in there
-bot_token = f.read().rstrip().lstrip()
+settings = json.load(f)
 f.close()
+bot_token = settings["token"].lstrip().rstrip()
 
 help_command = str()
 # Loop through, list all the commands

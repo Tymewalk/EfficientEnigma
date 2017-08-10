@@ -1,5 +1,10 @@
 import discord, asyncio, os, re, json
 
+# Load the settings
+f = open("{}/{}".format(os.path.dirname(os.path.realpath(__file__)), "settings.json"))
+settings = json.load(f)
+f.close()
+
 # This contains all the commands.
 # Commands are in the format of:
 # "command" : function
@@ -9,20 +14,21 @@ hook_table = dict()
 hook_table["edit"] = list()
 hook_table["delete"] = list()
 
-import modules.util, modules.dice, modules.roles, modules.logging
+import modules.util, modules.dice, modules.roles
+
+if settings["use_logging"]:
+    import modules.logging
 
 modules.util.setup_command_table(command_table)
 modules.dice.setup_command_table(command_table)
 modules.roles.setup_command_table(command_table)
 
-modules.logging.setup_hooks(hook_table)
+if settings["use_logging"]:
+    modules.logging.setup_hooks(hook_table)
 
 client = discord.Client()
 
-f = open("{}/{}".format(os.path.dirname(os.path.realpath(__file__)), "settings.json"))
-# Discord tokens have no whitespace, remove any that might've slipped in there
-settings = json.load(f)
-f.close()
+
 bot_token = settings["token"].lstrip().rstrip()
 
 help_command = str()

@@ -1,8 +1,13 @@
 # logging.py
 # Logs various user activities like message edits and deletions.
-import discord.utils, asyncio
+import discord.utils, asyncio, os, json
 
-log_channel = "(set this)"
+# Load the settings
+f = open("{}/{}".format(os.path.dirname(os.path.realpath(__file__)), "../settings.json"))
+settings = json.load(f)
+f.close()
+
+log_channel = settings["log_channel"]
 
 async def log_message_edit(client, old, new):
 	if not old.content == new.content:
@@ -14,4 +19,4 @@ async def log_message_delete(client, message):
 # Now setup
 def setup_hooks(hooktable):
 	hooktable["edit"].append(log_message_edit)
-	hooktable["delete"].append(log_message_edit)
+	hooktable["delete"].append(log_message_delete)

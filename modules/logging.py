@@ -10,3 +10,8 @@ async def log_message_edit(client, old, new):
 
 async def log_message_delete(client, message):
 	await client.send_message(discord.utils.get(message.server.channels, name=log_channel, type=discord.ChannelType.text), "User {} deleted their message in {}:\n{}\n".format(str(message.author), str(message.channel), message.content))
+
+# Now setup
+def setup_hooks(hooktable):
+	hooktable["edit"].append(log_message_edit)
+	hooktable["delete"].append(log_message_edit)

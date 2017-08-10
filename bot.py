@@ -4,12 +4,18 @@ import discord, asyncio, os, re, json
 # Commands are in the format of:
 # "command" : function
 command_table = dict()
+# Set up hooks. These get called every time something happens.
+hook_table = dict()
+hook_table["edit"] = list()
+hook_table["delete"] = list()
 
 import modules.util, modules.dice, modules.roles, modules.logging
 
 modules.util.setup_command_table(command_table)
 modules.dice.setup_command_table(command_table)
 modules.roles.setup_command_table(command_table)
+
+modules.logging.setup_hooks(hook_table)
 
 client = discord.Client()
 
@@ -45,11 +51,13 @@ async def on_message(message):
 
 @client.event
 async def on_message_edit(old, new):
-    await modules.logging.log_message_edit(client, old, new)
+    for hook in hook_table["edit"]:
+        await hook(client, old, new)
     
 @client.event
 async def on_message_delete(message):
-    await modules.logging.log_message_delete(client, message)
+    for hook in hook_table["delete"]:
+        await hook(client, message)
 
 try:
     # If any background tasks need to run, start them here

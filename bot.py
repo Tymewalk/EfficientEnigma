@@ -14,7 +14,7 @@ hook_table = dict()
 hook_table["edit"] = list()
 hook_table["delete"] = list()
 
-import modules.util, modules.dice, modules.roles
+import modules.util, modules.dice, modules.roles, modules.nostalgia
 
 if settings["use_logging"]:
     import modules.logging
@@ -22,6 +22,7 @@ if settings["use_logging"]:
 modules.util.setup_command_table(command_table)
 modules.dice.setup_command_table(command_table)
 modules.roles.setup_command_table(command_table)
+modules.nostalgia.setup_command_table(command_table)
 
 if settings["use_logging"]:
     modules.logging.setup_hooks(hook_table)

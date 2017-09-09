@@ -49,6 +49,7 @@ async def on_ready():
 async def on_message(message):
     # Check everything against our command table.
     # The modules specify what commands they run - so we just loop through and check
+    
     for command in command_table:
         if re.search("^{}".format(command), message.content):
             await command_table[command](message, client)

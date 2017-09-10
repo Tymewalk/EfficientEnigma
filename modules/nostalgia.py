@@ -31,10 +31,10 @@ async def nostalgia(message, client):
         output = re.sub(m, "\@{}".format(discord.utils.get(message.server.roles, id=roleid).name), output)
     # Filter everyone pings
     for m in re.findall("@everyone", output):
-        output = re.sub(m, "\@everyone)", output)
+        output = re.sub(m, "@ everyone)", output)
     # Filter here pings
     for m in re.findall("@here", output):
-        output = re.sub(m, "\@here)", output)
+        output = re.sub(m, "@ here)", output)
     await client.send_message(message.channel, "The great {} \"{}\" once said:\n\n{}".format(random.choice(titles), rand_message.author.name, output))
 
 # Add the commands to the global command table.

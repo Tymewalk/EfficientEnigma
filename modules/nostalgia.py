@@ -1,6 +1,6 @@
 # nostalgia.py
 # Handles the !nostalgia command.
-import random, calendar, re, discord.utils
+import random, calendar, re, discord.utils, time
 from datetime import datetime
 from datetime import *
 
@@ -12,7 +12,7 @@ async def nostalgia(message, client):
     else:
         searchin = message.channel
     messagelist = list()
-    randomtime = datetime.utcfromtimestamp(random.randint(calendar.timegm(message.channel.created_at.timetuple()), calendar.timegm(datetime.now().timetuple())))
+    randomtime = datetime.utcfromtimestamp(random.randint(calendar.timegm(message.channel.created_at.timetuple()), calendar.timegm(time.gmtime())))
     async for scan in client.logs_from(searchin, limit=3, around=randomtime):
         messagelist.append(scan)
     rand_message = random.choice(messagelist)

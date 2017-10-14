@@ -2,7 +2,6 @@
 # Handles the !nostalgia command.
 import random, calendar, re, discord.utils, time
 from datetime import datetime
-from datetime import *
 
 titles = ["teacher", "scientist", "scholar", "leader", "fighter", "mage", "wizard", "noble", "swordsman", "rifleman", "archer"]
 async def nostalgia(message, client):

@@ -3,7 +3,6 @@
 import random, calendar, re, discord.utils, time, requests, io
 from datetime import datetime
 
-titles = ["teacher", "scientist", "scholar", "leader", "fighter", "mage", "wizard", "noble", "swordsman", "rifleman", "archer"]
 async def nostalgia(message, client):
     searchin = False
     if re.findall("<#[0-9]+>", message.content):
@@ -37,9 +36,9 @@ async def nostalgia(message, client):
 
     if rand_message.attachments:
         filename = rand_message.attachments[0]["filename"]
-        await client.send_file(message.channel, io.BytesIO(requests.get(rand_message.attachments[0]["proxy_url"]).content), filename=filename, content="The great {} \"{}\" once said:\n\n{}".format(random.choice(titles), rand_message.author.name, output))
+        await client.send_file(message.channel, io.BytesIO(requests.get(rand_message.attachments[0]["proxy_url"]).content), filename=filename, content="At {}, {} said:\n\n{}".format(rand_message.timestamp.strftime("%Y-%m-%d %H:%M:%S UTC"), rand_message.author.name, output))
     else:
-        await client.send_message(message.channel, "The great {} \"{}\" once said:\n\n{}".format(random.choice(titles), rand_message.author.name, output))
+        await client.send_message(message.channel, "At {}, {} said:\n\n{}".format(rand_message.timestamp.strftime("%Y-%m-%d %H:%M:%S UTC"), rand_message.author.name, output))
 
 # Add the commands to the global command table.
 def setup_command_table(table):

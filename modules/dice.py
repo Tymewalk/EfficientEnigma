@@ -36,6 +36,10 @@ async def roll(message, client):
         await client.send_message(message.channel, "{} Sorry, I can't roll nothing.".format(message.author.mention))
         return
 
+    if amount > 250 or die_size > 1000:
+        await client.send_message(message.channel, "{} Sorry, that roll is too big! Please limit your rolls to 250d1000.".format(message.author.mention))
+        return
+
     roll_message = "{} Rolling {}d{} gives:\n".format(message.author.mention, amount, die_size)
 
     for i in range(amount):

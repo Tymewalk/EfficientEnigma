@@ -18,5 +18,6 @@ async def log_message_delete(client, message):
 
 # Now setup
 def setup_hooks(hooktable):
-    hooktable["edit"].append(log_message_edit)
-    hooktable["delete"].append(log_message_delete)
+	if settings["use_logging"]:
+	    hooktable["edit"].append(log_message_edit)
+	    hooktable["delete"].append(log_message_delete)

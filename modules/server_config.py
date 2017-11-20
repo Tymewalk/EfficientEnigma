@@ -2,29 +2,33 @@
 # Allows admins of a server to configure the bot.
 import discord, asyncio, json, os
 
+# This should be hardcoded - that way it's the same across all servers.
+# Might change in the future if necessary.
 admin_role_name = "EfficientEnigma Admin"
 
 settings = dict()
 
 def load_settings():
-    # Load the settings
+    # Load the settings.
     global settings
     f = open("{}/{}".format(os.path.dirname(os.path.realpath(__file__)), "../settings.json"), 'r')
     settings = json.load(f)
     f.close()
 
 def save_settings(in_settings):
-    # Save the settings
+    # Save the settings.
     f = open("{}/{}".format(os.path.dirname(os.path.realpath(__file__)), "../settings.json"), 'w')
     json.dump(in_settings, f)
     f.close()
 
 def server_has_settings(in_settings, message):
+    # Check if the server has settings - if not, just create a new table for them.
     if not message.server.id in in_settings:
         in_settings[message.server.id] = dict()
     return in_settings
 
 async def check_if_can_edit(user, message, client):
+    # Does this user have permission to change admin stuff?
     found_admin = False
     for r in message.server.roles:
         if r.name == admin_role_name:
@@ -38,12 +42,13 @@ async def check_if_can_edit(user, message, client):
     return result
 
 async def check_and_return(message, client):
+    # DEBUG/TEST COMMAND - Checks if a user can edit, and tells them.
     result = await check_if_can_edit(message.author, message, client)
     await client.send_message(message.channel, "{} Have role for editing: {}".format(message.author.mention, result))
 
 async def toggle_logs(message, client):
-    global settings
     # Toggles logs, simple as that.
+    global settings
     load_settings()
     settings = server_has_settings(settings, message)
     if not "use_logging" in settings[message.server.id]:

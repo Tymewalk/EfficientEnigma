@@ -2,16 +2,18 @@
 # Logs various user activities like message edits and deletions.
 import discord.utils, asyncio, os, json
 
+# We create a settings dict because otherwise it complains it hasn't been initialized.
 settings = dict()
 
 def load_settings():
+    # Load the settings.
     global settings
-    # Load the settings
     f = open("{}/{}".format(os.path.dirname(os.path.realpath(__file__)), "../settings.json"))
     settings = json.load(f)
     f.close()
 
 async def log_message_edit(client, old, new):
+    # Log message edits.
     load_settings()
     if settings[old.server.id]["use_logging"] == True:
         log_channel = settings[old.server.id]["log_channel"]
@@ -19,6 +21,7 @@ async def log_message_edit(client, old, new):
             await client.send_message(discord.utils.get(old.server.channels, name=log_channel, type=discord.ChannelType.text), "{}\nUser {} edited their message in {}:\nOld: {}\nNew: {}".format(new.edited_timestamp.strftime("%Y-%m-%d %H:%M:%S UTC"), str(old.author), str(old.channel), old.content, new.content))
 
 async def log_message_delete(client, message):
+    # Log message deletions.
     load_settings()
     if settings[message.server.id]["use_logging"] == True:
         log_channel = settings[message.server.id]["log_channel"]

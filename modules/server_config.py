@@ -1,8 +1,28 @@
 # settings.py
 # Allows admins of a server to configure the bot.
-import discord, asyncio
+import discord, asyncio, json, os
 
 admin_role_name = "EfficientEnigma Admin"
+
+settings = dict()
+
+def load_settings():
+    # Load the settings
+    global settings
+    f = open("{}/{}".format(os.path.dirname(os.path.realpath(__file__)), "../settings.json"), 'r')
+    settings = json.load(f)
+    f.close()
+
+def save_settings(in_settings):
+    # Save the settings
+    f = open("{}/{}".format(os.path.dirname(os.path.realpath(__file__)), "../settings.json"), 'w')
+    json.dump(in_settings, f)
+    f.close()
+
+def server_has_settings(in_settings, message):
+    if not message.server.id in in_settings:
+        in_settings[message.server.id] = dict()
+    return in_settings
 
 async def check_if_can_edit(user, message, client):
     found_admin = False
@@ -21,6 +41,20 @@ async def check_and_return(message, client):
     result = await check_if_can_edit(message.author, message, client)
     await client.send_message(message.channel, "{} Have role for editing: {}".format(message.author.mention, result))
 
+async def toggle_logs(message, client):
+    global settings
+    # Toggles logs, simple as that.
+    load_settings()
+    settings = server_has_settings(settings, message)
+    if not "use_logging" in settings[message.server.id]:
+        settings[message.server.id]["use_logging"] = True
+        settings[message.server.id]["log_channel"] = "modlog"
+    settings[message.server.id]["use_logging"] = not settings[message.server.id]["use_logging"]
+    await client.send_message(message.channel, "{} Logging set to {}".format(message.author.mention, settings[message.server.id]["use_logging"]))
+    save_settings(settings)
+
+
 # Add the commands to the global command table.
 def setup_command_table(table):
     table["\\$check"] = check_and_return
+    table["\\$logtoggle"] = toggle_logs

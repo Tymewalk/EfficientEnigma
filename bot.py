@@ -35,7 +35,7 @@ bot_token = settings["token"].lstrip().rstrip()
 help_command = str()
 # Loop through, list all the commands
 for command in command_table:
-    help_command += "{}, ".format(command)
+    help_command += "{}\n".format(command)
 
 # Remove the final ", "
 help_command = help_command[:-2]

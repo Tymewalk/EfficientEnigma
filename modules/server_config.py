@@ -83,9 +83,56 @@ async def set_log_channel(message, client):
         save_settings(settings)
     else:
         await client.send_message(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
-        
+
+async def allow_role(message, client):
+    global settings
+    is_admin = await check_if_can_edit(message.author, message, client)
+    if is_admin:
+        load_settings()
+        settings = server_has_settings(settings, message)
+        if not "allowed_roles" in settings[message.server.id]:
+            settings[message.server.id]["allowed_roles"] = []
+        if re.match("^\$[^\W]+( |)+$", message.content):
+            # Don't do anything if it's all whitespace
+            await client.send_message(message.channel, ":warning: Sorry, you forgot to specify a role.")
+            return
+        role_name = re.sub("^\$[^\W]+ ", "", message.content)
+        if role_name in settings[message.server.id]["allowed_roles"]:
+            await client.send_message(message.channel, ":warning: That role is already allowed to be assigned.")
+        else:
+            settings[message.server.id]["allowed_roles"].append(role_name)
+            await client.send_message(message.channel, ":white_check_mark: That role can now be self-assigned by members.")
+            save_settings(settings)
+            
+    else:
+        await client.send_message(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
+
+async def remove_role(message, client):
+    global settings
+    is_admin = await check_if_can_edit(message.author, message, client)
+    if is_admin:
+        load_settings()
+        settings = server_has_settings(settings, message)
+        if not "allowed_roles" in settings[message.server.id]:
+            settings[message.server.id]["allowed_roles"] = []
+        if re.match("^\\\$[^\W]+( |)+$", message.content):
+            # Don't do anything if it's all whitespace
+            await client.send_message(message.channel, ":warning: Sorry, you forgot to specify a role.")
+            return
+        role_name = re.sub("^\\\$[^\W]+ ", "", message.content)
+        if not role_name in settings[message.server.id]["allowed_roles"]:
+            await client.send_message(message.channel, ":warning: That role already can not be assigned.")
+        else:
+            settings[message.server.id]["allowed_roles"].append(role_name)
+            await client.send_message(message.channel, ":white_check_mark: That role can no longer be self-assigned by members.")
+            save_settings(settings)  
+    else:
+        await client.send_message(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
+
 # Add the commands to the global command table.
 def setup_command_table(table):
     table["\\$check"] = check_and_return
     table["\\$logtoggle"] = toggle_logs
     table["\\$logchannel"] = set_log_channel
+    table["\\$allowrole"] = allow_role
+    table["\\$removerole"] = remove_role

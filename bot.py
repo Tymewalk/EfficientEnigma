@@ -24,6 +24,7 @@ modules.nostalgia.setup_command_table(command_table)
 modules.server_config.setup_command_table(command_table)
 
 modules.logging.setup_hooks(hook_table)
+modules.server_config.setup_hooks(hook_table)
 
 client = discord.Client()
 

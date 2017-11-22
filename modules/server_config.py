@@ -129,6 +129,18 @@ async def remove_role(message, client):
     else:
         await client.send_message(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
 
+async def set_up_defaults(client, message):
+    global settings
+    load_settings()
+    if not message.server.id in settings:
+        print("Had to set up default settings for server {}".format(message.server.id))
+        settings[message.server.id] = dict()
+        settings[message.server.id]["allowed_roles"] = []
+        settings[message.server.id]["use_logging"] = True
+        settings[message.server.id]["log_channel"] = "modlog"
+        save_settings(settings)
+
+
 # Add the commands to the global command table.
 def setup_command_table(table):
     table["\\$check"] = check_and_return
@@ -136,3 +148,6 @@ def setup_command_table(table):
     table["\\$logchannel"] = set_log_channel
     table["\\$allowrole"] = allow_role
     table["\\$removerole"] = remove_role
+
+def setup_hooks(hooktable):
+    hooktable["message"].append(set_up_defaults)

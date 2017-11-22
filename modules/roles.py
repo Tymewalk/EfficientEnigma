@@ -1,11 +1,24 @@
 # roles.py
 # Role management, such as assigning and removing roles.
-import discord.utils, re
+import discord.utils, re, os, json
 
 # TODO: Set up config for role list
 allowed_roles = []
 
+# We create a settings dict because otherwise it complains it hasn't been initialized.
+settings = dict()
+
+def load_settings():
+    # Load the settings.
+    global settings
+    f = open("{}/{}".format(os.path.dirname(os.path.realpath(__file__)), "../settings.json"))
+    settings = json.load(f)
+    f.close()
+
 async def give_role(message, client):
+    load_settings()
+    # Grab the list of roles - they're just plaintext names
+    allowed_roles = settings[message.server.id]["allowed_roles"]
     role_list = ""
     for role in allowed_roles:
         role_list += "{}, ".format(role)
@@ -33,13 +46,19 @@ async def give_role(message, client):
             await client.send_message(message.channel, ":no_entry: That role is in the allowed roles list, but does not actually exist.\nPlease notify the bot admin.")
 
 async def list_roles(message, client):
+    load_settings()
+    # Grab the list of roles - they're just plaintext names
+    allowed_roles = settings[message.server.id]["allowed_roles"]
     roleList = ""
     for role in allowed_roles:
-        roleList += "{}, ".format(i)
+        roleList += "{}, ".format(role)
     roleList = roleList[:-2]
     await client.send_message(message.channel, "You can assign yourself any of the following:\n{}".format(roleList))
 
 async def remove_role(message, client):
+    load_settings()
+    # Grab the list of roles - they're just plaintext names
+    allowed_roles = settings[message.server.id]["allowed_roles"]
     role_list = ""
     for role in allowed_roles:
         role_list += "{}, ".format(role)

@@ -41,12 +41,7 @@ async def check_if_can_edit(user, message, client):
 
     result = discord.utils.get(message.server.roles, name=admin_role_name) in user.roles
     return result
-
-async def check_and_return(message, client):
-    # DEBUG/TEST COMMAND - Checks if a user can edit, and tells them.
-    result = await check_if_can_edit(message.author, message, client)
-    await client.send_message(message.channel, "{} Have role for editing: {}".format(message.author.mention, result))
-
+    
 async def toggle_logs(message, client):
     # Toggles logs on and off, simple as that.
     global settings
@@ -144,7 +139,6 @@ async def set_up_defaults(client, message):
 
 # Add the commands to the global command table.
 def setup_command_table(table):
-    table["\\$check"] = check_and_return
     table["\\$logtoggle"] = toggle_logs
     table["\\$logchannel"] = set_log_channel
     table["\\$allowrole"] = allow_role

@@ -64,6 +64,7 @@ async def toggle_logs(message, client):
         await client.send_message(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
 
 async def set_log_channel(message, client):
+    # Set the channel to log edits and deletions in.
     global settings
     is_admin = await check_if_can_edit(message.author, message, client)
     if is_admin:

@@ -1,6 +1,6 @@
 # settings.py
 # Allows admins of a server to configure the bot.
-import discord, asyncio, json, os
+import discord, asyncio, json, os, re
 
 # This should be hardcoded - that way it's the same across all servers.
 # Might change in the future if necessary.
@@ -58,8 +58,25 @@ async def toggle_logs(message, client):
     await client.send_message(message.channel, "{} Logging set to {}".format(message.author.mention, settings[message.server.id]["use_logging"]))
     save_settings(settings)
 
+async def set_log_channel(message, client):
+    global settings
+    if re.findall("<#[0-9]+>", message.content):
+        # Get the name of the channel - that should be all we need
+        log_channel = message.server.get_channel(re.sub("[\<\#\>]", "", re.findall("<#[0-9]+>", message.content)[0])).name
+    else:
+        await client.send_message(message.channel, "{} Please specify a logging channel by typing `#name_of_channel`.")
+        return False
+    
+    load_settings()
+    settings = server_has_settings(settings, message)
+    if not "log_channel" in settings[message.server.id]:
+        settings[message.server.id]["use_logging"] = True
+    settings[message.server.id]["log_channel"] = log_channel
+    await client.send_message(message.channel, "{} Log channel set to {}".format(message.author.mention, settings[message.server.id]["log_channel"]))
+    save_settings(settings)
 
 # Add the commands to the global command table.
 def setup_command_table(table):
     table["\\$check"] = check_and_return
     table["\\$logtoggle"] = toggle_logs
+    table["\\$logchannel"] = set_log_channel

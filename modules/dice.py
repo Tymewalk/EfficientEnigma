@@ -50,5 +50,5 @@ async def roll(message, client):
 
 # Add the commands to the global command table.
 def setup_command_table(table):
-    table["!8ball"] = magic_eight_ball
-    table["!roll"] = roll
+    table["!8ball (question) - ask the magic 8 ball any question. "] = magic_eight_ball
+    table["!roll (dice) - roll dice using dice notation. Dice notation is written XdY, where X is the number of dice to roll, and Y is the amount of sides on each die."] = roll

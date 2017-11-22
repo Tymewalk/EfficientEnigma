@@ -12,9 +12,11 @@ eight_ball_phrases = [
     ]
 
 async def magic_eight_ball(message, client):
+    # Magic 8 Ball - ask a question, get an answer.
     await client.send_message(message.channel, "{} {}".format(message.author.mention, random.choice(eight_ball_phrases)))
 
 async def roll(message, client):
+    # Roll dice.
     args = message.content.split(sep=' ')
     # Ignore args[0] - it's !roll
     dice_args = args[1].split(sep='d')
@@ -22,7 +24,7 @@ async def roll(message, client):
     if not len(dice_args) == 2:
         await client.send_message(message.channel, "{} Sorry, that's not a valid roll. Valid rolls are in the form XdY.",format(message.author.mention))
         return
-    # Try making them ints, if we can't they're not numbers
+    # Try making them ints, if we can't they're not numbers and we shouldn't be rolling them
     try:
         amount = int(dice_args[0])
         die_size = int(dice_args[1])

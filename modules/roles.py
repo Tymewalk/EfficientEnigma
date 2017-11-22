@@ -16,6 +16,7 @@ def load_settings():
     f.close()
 
 async def give_role(message, client):
+    # Gives a user a role.
     load_settings()
     # Grab the list of roles - they're just plaintext names
     allowed_roles = settings[message.server.id]["allowed_roles"]
@@ -46,6 +47,7 @@ async def give_role(message, client):
             await client.send_message(message.channel, ":no_entry: That role is in the allowed roles list, but does not actually exist.\nPlease notify the bot admin.")
 
 async def list_roles(message, client):
+    # List the roles the user can assign themselves.
     load_settings()
     # Grab the list of roles - they're just plaintext names
     allowed_roles = settings[message.server.id]["allowed_roles"]
@@ -56,6 +58,7 @@ async def list_roles(message, client):
     await client.send_message(message.channel, "You can assign yourself any of the following:\n{}".format(roleList))
 
 async def remove_role(message, client):
+    # Removes a role from a user.
     load_settings()
     # Grab the list of roles - they're just plaintext names
     allowed_roles = settings[message.server.id]["allowed_roles"]

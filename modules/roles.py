@@ -87,6 +87,6 @@ async def remove_role(message, client):
 
 # Add the commands to the global command table.
 def setup_command_table(table):
-    table["!giverole"] = give_role
-    table["!removerole"] = remove_role
-    table["!listroles"] = list_roles
+    table["!giverole (role) - give yourself a role."] = give_role
+    table["!removerole (role) - removes one of your roles."] = remove_role
+    table["!listroles - lists all the roles you can give yourself."] = list_roles

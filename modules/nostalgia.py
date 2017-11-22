@@ -47,4 +47,4 @@ async def nostalgia(message, client):
 
 # Add the commands to the global command table.
 def setup_command_table(table):
-    table["!nostalgia"] = nostalgia
+    table["!nostalgia (channel) - Look at past messages from different channels for nostaliga reasons."] = nostalgia

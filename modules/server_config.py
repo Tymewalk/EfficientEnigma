@@ -149,5 +149,7 @@ def setup_command_table(table):
     table["\\$allowrole"] = allow_role
     table["\\$removerole"] = remove_role
 
+    # TODO: Work out how to add help commands for these properly
+
 def setup_hooks(hooktable):
     hooktable["message"].append(set_up_defaults)

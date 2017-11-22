@@ -14,13 +14,15 @@ hook_table = dict()
 hook_table["edit"] = list()
 hook_table["delete"] = list()
 hook_table["message"] = list()
+# This is the help table - it controls all the help commands.
+help_table = dict()
 
 import modules.util, modules.dice, modules.roles, modules.nostalgia, modules.server_config, modules.logging
 
-modules.util.setup_command_table(command_table)
-modules.dice.setup_command_table(command_table)
-modules.roles.setup_command_table(command_table)
-modules.nostalgia.setup_command_table(command_table)
+modules.util.setup_command_table(command_table, help_table)
+modules.dice.setup_command_table(command_table, help_table)
+modules.roles.setup_command_table(command_table, help_table)
+modules.nostalgia.setup_command_table(command_table, help_table)
 modules.server_config.setup_command_table(command_table)
 
 modules.logging.setup_hooks(hook_table)
@@ -33,8 +35,8 @@ bot_token = settings["token"].lstrip().rstrip()
 
 help_command = str()
 # Loop through, list all the commands
-for command in command_table:
-    help_command += "{}\n".format(command)
+for command in help_table:
+    help_command += "{} - {}\n".format(command, help_table[command])
 
 @client.event
 async def on_ready():

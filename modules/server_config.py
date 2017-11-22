@@ -29,6 +29,7 @@ def server_has_settings(in_settings, message):
 
 async def check_if_can_edit(user, message, client):
     # Does this user have permission to change admin stuff?
+    # We need a message so we can properly check if they can.
     found_admin = False
     for r in message.server.roles:
         if r.name == admin_role_name:
@@ -47,34 +48,42 @@ async def check_and_return(message, client):
     await client.send_message(message.channel, "{} Have role for editing: {}".format(message.author.mention, result))
 
 async def toggle_logs(message, client):
-    # Toggles logs, simple as that.
+    # Toggles logs on and off, simple as that.
     global settings
-    load_settings()
-    settings = server_has_settings(settings, message)
-    if not "use_logging" in settings[message.server.id]:
-        settings[message.server.id]["use_logging"] = True
-        settings[message.server.id]["log_channel"] = "modlog"
-    settings[message.server.id]["use_logging"] = not settings[message.server.id]["use_logging"]
-    await client.send_message(message.channel, "{} Logging set to {}".format(message.author.mention, settings[message.server.id]["use_logging"]))
-    save_settings(settings)
+    is_admin = await check_if_can_edit(message.author, message, client)
+    if is_admin:
+        load_settings()
+        settings = server_has_settings(settings, message)
+        if not "use_logging" in settings[message.server.id]:
+            settings[message.server.id]["use_logging"] = True
+            settings[message.server.id]["log_channel"] = "modlog"
+        settings[message.server.id]["use_logging"] = not settings[message.server.id]["use_logging"]
+        await client.send_message(message.channel, "{} Logging set to {}".format(message.author.mention, settings[message.server.id]["use_logging"]))
+        save_settings(settings)
+    else:
+        await client.send_message(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
 
 async def set_log_channel(message, client):
     global settings
-    if re.findall("<#[0-9]+>", message.content):
-        # Get the name of the channel - that should be all we need
-        log_channel = message.server.get_channel(re.sub("[\<\#\>]", "", re.findall("<#[0-9]+>", message.content)[0])).name
+    is_admin = await check_if_can_edit(message.author, message, client)
+    if is_admin:
+        if re.findall("<#[0-9]+>", message.content):
+            # Get the name of the channel - that should be all we need
+            log_channel = message.server.get_channel(re.sub("[\<\#\>]", "", re.findall("<#[0-9]+>", message.content)[0])).name
+        else:
+            await client.send_message(message.channel, "{} Please specify a logging channel by typing `#name_of_channel`.")
+            return False
+        
+        load_settings()
+        settings = server_has_settings(settings, message)
+        if not "log_channel" in settings[message.server.id]:
+            settings[message.server.id]["use_logging"] = True
+        settings[message.server.id]["log_channel"] = log_channel
+        await client.send_message(message.channel, "{} Log channel set to {}".format(message.author.mention, settings[message.server.id]["log_channel"]))
+        save_settings(settings)
     else:
-        await client.send_message(message.channel, "{} Please specify a logging channel by typing `#name_of_channel`.")
-        return False
-    
-    load_settings()
-    settings = server_has_settings(settings, message)
-    if not "log_channel" in settings[message.server.id]:
-        settings[message.server.id]["use_logging"] = True
-    settings[message.server.id]["log_channel"] = log_channel
-    await client.send_message(message.channel, "{} Log channel set to {}".format(message.author.mention, settings[message.server.id]["log_channel"]))
-    save_settings(settings)
-
+        await client.send_message(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
+        
 # Add the commands to the global command table.
 def setup_command_table(table):
     table["\\$check"] = check_and_return

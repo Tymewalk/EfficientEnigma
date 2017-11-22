@@ -36,9 +36,6 @@ help_command = str()
 for command in command_table:
     help_command += "{}\n".format(command)
 
-# Remove the final ", "
-help_command = help_command[:-2]
-
 @client.event
 async def on_ready():
     print('Successfully logged in as {} (ID {}).'.format(client.user.name, client.user.id))

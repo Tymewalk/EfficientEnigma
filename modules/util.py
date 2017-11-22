@@ -5,4 +5,4 @@ async def ping(message, client):
 
 # Add the commands to the global command table.
 def setup_command_table(table):
-    table["!ping"] = ping
+    table["!ping - Literally just ping."] = ping

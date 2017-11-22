@@ -13,6 +13,7 @@ command_table = dict()
 hook_table = dict()
 hook_table["edit"] = list()
 hook_table["delete"] = list()
+hook_table["message"] = list()
 
 import modules.util, modules.dice, modules.roles, modules.nostalgia, modules.server_config, modules.logging
 
@@ -46,6 +47,10 @@ async def on_ready():
 async def on_message(message):
     # Check everything against our command table.
     # The modules specify what commands they run - so we just loop through and check
+
+    # Run through all the hooks, these get called every message:
+    for hook in hook_table["message"]:
+        await hook(client, message)
     
     for command in command_table:
         if re.search("^{}".format(command), message.content):

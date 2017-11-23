@@ -16,10 +16,13 @@ Step 3: Set up the bot:
 
     python3.5 config.py
 
-You will be prompted for your token and a couple of other options.
+You will be prompted for your bot's token.
 
 Step 4: Run the bot:
 
     python3.5 bot.py
     
 It is advised to do this in a `screen` session, so you don't have a terminal sitting there open.
+
+## Configuration
+Anyone with a role titled "EfficientEnigma Admin" may use the bot's internal configuration commands to set up the bot for their server.

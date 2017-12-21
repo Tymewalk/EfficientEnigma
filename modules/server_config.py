@@ -58,8 +58,8 @@ async def toggle_logs(message, client):
                 settings[message.server.id]["use_logging"] = True
                 settings[message.server.id]["log_channel"] = "modlog"
             settings[message.server.id]["use_logging"] = not settings[message.server.id]["use_logging"]
-            await client.send_message(message.channel, "{} Logging set to {}".format(message.author.mention, settings[message.server.id]["use_logging"]))
             save_settings(settings)
+            await client.send_message(message.channel, "{} Logging set to {}".format(message.author.mention, settings[message.server.id]["use_logging"]))
         else:
             await client.send_message(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
     else:
@@ -83,8 +83,8 @@ async def set_log_channel(message, client):
             if not "log_channel" in settings[message.server.id]:
                 settings[message.server.id]["use_logging"] = True
             settings[message.server.id]["log_channel"] = log_channel
-            await client.send_message(message.channel, "{} Log channel set to {}".format(message.author.mention, settings[message.server.id]["log_channel"]))
             save_settings(settings)
+            await client.send_message(message.channel, "{} Log channel set to {}".format(message.author.mention, settings[message.server.id]["log_channel"]))
         else:
             await client.send_message(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
     else:

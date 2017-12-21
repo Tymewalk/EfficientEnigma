@@ -1,6 +1,6 @@
 # logging.py
 # Logs various user activities like message edits and deletions.
-import discord.utils, asyncio, os, json
+import discord.utils, asyncio, os, json, requests, io
 
 # We create a settings dict because otherwise it complains it hasn't been initialized.
 settings = dict()
@@ -32,7 +32,12 @@ async def log_message_delete(client, message):
         load_settings()
         if settings[message.server.id]["use_logging"] == True:
             log_channel = settings[message.server.id]["log_channel"]
-            await client.send_message(discord.utils.get(message.server.channels, name=log_channel, type=discord.ChannelType.text), "{}\nMessage by {} was deleted in {}:\n{}\n".format(message.timestamp.strftime("%Y-%m-%d %H:%M:%S UTC"), str(message.author), str(message.channel), message.content))
+            if message.channel.name is not settings[message.server.id]["log_channel"]:
+                if message.attachments:
+                    filename = message.attachments[0]["filename"]
+                    await client.send_file(discord.utils.get(message.server.channels, name=log_channel, type=discord.ChannelType.text), io.BytesIO(requests.get(message.attachments[0]["proxy_url"]).content), filename=filename, content="{}\nMessage by {} was deleted in {}:\n{}\n".format(message.timestamp.strftime("%Y-%m-%d %H:%M:%S UTC"), str(message.author), str(message.channel), message.content))
+                else:
+                    await client.send_message(discord.utils.get(message.server.channels, name=log_channel, type=discord.ChannelType.text), "{}\nMessage by {} was deleted in {}:\n{}\n".format(message.timestamp.strftime("%Y-%m-%d %H:%M:%S UTC"), str(message.author), str(message.channel), message.content))
 
 # Now setup
 def setup_hooks(hooktable):

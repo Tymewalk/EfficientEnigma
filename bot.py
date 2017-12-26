@@ -15,6 +15,8 @@ hook_table = dict()
 hook_table["edit"] = list()
 hook_table["delete"] = list()
 hook_table["message"] = list()
+hook_table["reaction_add"] = list()
+hook_table["reaction_remove"] = list()
 # This is the help table - it controls all the help descriptions.
 help_table = dict()
 
@@ -73,6 +75,18 @@ async def on_message_delete(message):
     # Run through anything that needs to be done on message deletions.
     for hook in hook_table["delete"]:
         await hook(client, message)
+
+@client.event
+async def on_reaction_add(reaction, user):
+    # Run through anything that needs to be done on message deletions.
+    for hook in hook_table["reaction_add"]:
+        await hook(reaction, user)
+
+@client.event
+async def on_reaction_remove(reaction, user):
+    # Run through anything that needs to be done on message deletions.
+    for hook in hook_table["reaction_remove"]:
+        await hook(reaction, user)
 
 try:
     # If any background tasks need to run, start them here.

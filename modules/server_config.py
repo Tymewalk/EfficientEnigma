@@ -141,6 +141,76 @@ async def remove_role(message, client):
     else:
         await client.send_message(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
 
+async def toggle_starboard(message, client):
+    if is_in_server(message):
+        # Toggles logs on and off, simple as that.
+        global settings
+        is_admin = await check_if_can_edit(message.author, message, client)
+        if is_admin:
+            load_settings()
+            settings = server_has_settings(settings, message)
+            if not "use_stars" in settings[message.server.id]:
+                settings[message.server.id]["use_stars"] = False
+                settings[message.server.id]["star_channel"] = "starboard"
+                settings[message.server.id]["star_emoji"] = "\N{WHITE MEDIUM STAR}"
+            settings[message.server.id]["use_stars"] = not settings[message.server.id]["use_stars"]
+            save_settings(settings)
+            await client.send_message(message.channel, "{} Starboard set to {}".format(message.author.mention, settings[message.server.id]["use_stars"]))
+        else:
+            await client.send_message(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
+    else:
+        await client.send_message(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
+
+async def set_starboard_channel(message, client):
+    # Set the channel to log edits and deletions in.
+    if is_in_server(message):
+        global settings
+        is_admin = await check_if_can_edit(message.author, message, client)
+        if is_admin:
+            if re.findall("<#[0-9]+>", message.content):
+                # Get the name of the channel - that should be all we need
+                star_channel = message.server.get_channel(re.sub("[\<\#\>]", "", re.findall("<#[0-9]+>", message.content)[0])).name
+            else:
+                await client.send_message(message.channel, "{} Please specify a starboard channel by typing `#name_of_channel`.")
+                return False
+            
+            load_settings()
+            settings = server_has_settings(settings, message)
+            if not "star_channel" in settings[message.server.id]:
+                settings[message.server.id]["use_stars"] = False
+                settings[message.server.id]["star_emoji"] = "\N{WHITE MEDIUM STAR}"
+            settings[message.server.id]["star_channel"] = star_channel
+            save_settings(settings)
+            await client.send_message(message.channel, "{} Starboard channel set to {}".format(message.author.mention, settings[message.server.id]["star_channel"]))
+        else:
+            await client.send_message(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
+    else:
+        await client.send_message(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
+
+async def set_starboard_emoji(message, client):
+    # Set the channel to log edits and deletions in.
+    if is_in_server(message):
+        global settings
+        is_admin = await check_if_can_edit(message.author, message, client)
+        if is_admin:
+            star_emoji = re.sub("^\$\S+ ", "", re.sub("\s+$", "",  message.content))
+            print(star_emoji)
+            print(re.sub("\s+$", "",  message.content))
+            print(message.content)
+            
+            load_settings()
+            settings = server_has_settings(settings, message)
+            if not "star_emoji" in settings[message.server.id]:
+                settings[message.server.id]["use_stars"] = False
+                settings[message.server.id]["star_channel"] = "starboard"
+            settings[message.server.id]["star_emoji"] = star_emoji
+            save_settings(settings)
+            await client.send_message(message.channel, "{} Starboard emoji set to {}".format(message.author.mention, settings[message.server.id]["star_emoji"]))
+        else:
+            await client.send_message(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
+    else:
+        await client.send_message(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
+
 async def set_up_defaults(client, message):
     if is_in_server(message):
         # If we're not in a server, every command crashes, as it tries to grab a server ID where there is none.
@@ -152,8 +222,10 @@ async def set_up_defaults(client, message):
             settings[message.server.id]["allowed_roles"] = []
             settings[message.server.id]["use_logging"] = True
             settings[message.server.id]["log_channel"] = "modlog"
+            settings[message.server.id]["use_stars"] = False
+            settings[message.server.id]["star_channel"] = "starboard"
+            settings[message.server.id]["star_emoji"] = "\N{WHITE MEDIUM STAR}"
             save_settings(settings)
-
 
 # Add the commands to the global command table.
 def setup_command_table(table):
@@ -161,6 +233,9 @@ def setup_command_table(table):
     table["\\$logchannel"] = set_log_channel
     table["\\$allowrole"] = allow_role
     table["\\$removerole"] = remove_role
+    table["\\$startoggle"] = toggle_starboard
+    table["\\$starchannel"] = set_starboard_channel
+    table["\\$staremoji"] = set_starboard_emoji
 
     # TODO: Work out how to add help commands for these properly
 

@@ -23,7 +23,7 @@ async def check_for_starring(client, reaction, user):
          reactions = 0 
          for e in message.reactions:
             if e.emoji == settings[message.server.id]["star_emoji"]:
-                reactions = e.emoji.count
+                reactions = e.emoji.count()
          if reactions >= settings[message.server.id]['star_requirement']:
              if message.attachments:
                 filename = message.attachments[0]["filename"]

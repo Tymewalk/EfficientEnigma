@@ -20,7 +20,7 @@ hook_table["reaction_remove"] = list()
 # This is the help table - it controls all the help descriptions.
 help_table = dict()
 
-import modules.util, modules.dice, modules.roles, modules.nostalgia, modules.server_config, modules.logging
+import modules.util, modules.dice, modules.roles, modules.nostalgia, modules.server_config, modules.logging, modules.stars
 
 # Set up command tables
 # Most of them also get a help table passed in, to set up the help descriptions
@@ -33,6 +33,7 @@ modules.server_config.setup_command_table(command_table)
 # Set up hook tables
 modules.logging.setup_hooks(hook_table)
 modules.server_config.setup_hooks(hook_table)
+modules.stars.setup_hooks(hook_table)
 
 client = discord.Client()
 
@@ -78,15 +79,15 @@ async def on_message_delete(message):
 
 @client.event
 async def on_reaction_add(reaction, user):
-    # Run through anything that needs to be done on message deletions.
+    # Run through anything that needs to be done on reactions being added.
     for hook in hook_table["reaction_add"]:
-        await hook(reaction, user)
+        await hook(client, reaction, user)
 
 @client.event
 async def on_reaction_remove(reaction, user):
-    # Run through anything that needs to be done on message deletions.
+    # Run through anything that needs to be done on reactions being deleted.
     for hook in hook_table["reaction_remove"]:
-        await hook(reaction, user)
+        await hook(client, reaction, user)
 
 try:
     # If any background tasks need to run, start them here.

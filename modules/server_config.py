@@ -153,6 +153,7 @@ async def toggle_starboard(message, client):
                 settings[message.server.id]["use_stars"] = False
                 settings[message.server.id]["star_channel"] = "starboard"
                 settings[message.server.id]["star_emoji"] = "\N{WHITE MEDIUM STAR}"
+                settings[message.server.id]["star_requirement"] = 3
             settings[message.server.id]["use_stars"] = not settings[message.server.id]["use_stars"]
             save_settings(settings)
             await client.send_message(message.channel, "{} Starboard set to {}".format(message.author.mention, settings[message.server.id]["use_stars"]))
@@ -179,6 +180,7 @@ async def set_starboard_channel(message, client):
             if not "star_channel" in settings[message.server.id]:
                 settings[message.server.id]["use_stars"] = False
                 settings[message.server.id]["star_emoji"] = "\N{WHITE MEDIUM STAR}"
+                settings[message.server.id]["star_requirement"] = 3
             settings[message.server.id]["star_channel"] = star_channel
             save_settings(settings)
             await client.send_message(message.channel, "{} Starboard channel set to {}".format(message.author.mention, settings[message.server.id]["star_channel"]))
@@ -188,24 +190,49 @@ async def set_starboard_channel(message, client):
         await client.send_message(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
 
 async def set_starboard_emoji(message, client):
-    # Set the channel to log edits and deletions in.
+    # Set the channel to log stars in.
     if is_in_server(message):
         global settings
         is_admin = await check_if_can_edit(message.author, message, client)
         if is_admin:
+            # First one removes the command's name, second filters any whitespace Discord adds to the end.
             star_emoji = re.sub("^\$\S+ ", "", re.sub("\s+$", "",  message.content))
-            print(star_emoji)
-            print(re.sub("\s+$", "",  message.content))
-            print(message.content)
-            
+            star_emoji = star_emoji[0] # Only one character
             load_settings()
             settings = server_has_settings(settings, message)
             if not "star_emoji" in settings[message.server.id]:
                 settings[message.server.id]["use_stars"] = False
                 settings[message.server.id]["star_channel"] = "starboard"
+                settings[message.server.id]["star_requirement"] = 3
             settings[message.server.id]["star_emoji"] = star_emoji
             save_settings(settings)
             await client.send_message(message.channel, "{} Starboard emoji set to {}".format(message.author.mention, settings[message.server.id]["star_emoji"]))
+        else:
+            await client.send_message(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
+    else:
+        await client.send_message(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
+
+async def set_starboard_requirement(message, client):
+    # Set the number of reactions necessary before starring.
+    if is_in_server(message):
+        global settings
+        is_admin = await check_if_can_edit(message.author, message, client)
+        if is_admin:
+            # First one removes the command's name, second filters any whitespace Discord adds to the end.
+            try:
+                star_count = int(re.sub("^\$\S+ ", "", re.sub("\s+$", "",  message.content)))
+            except:
+                await client.send_message(message.channel, "{} Sorry, that's not an integer!".format(message.author.mention))
+            finally:
+                load_settings()
+                settings = server_has_settings(settings, message)
+                if not "star_emoji" in settings[message.server.id]:
+                    settings[message.server.id]["use_stars"] = False
+                    settings[message.server.id]["star_channel"] = "starboard"
+                    settings[message.server.id]["star_emoji"] = "\N{WHITE MEDIUM STAR}"
+                settings[message.server.id]["star_requirement"] = star_count
+                save_settings(settings)
+                await client.send_message(message.channel, "{} Star requirement set to {}".format(message.author.mention, settings[message.server.id]["star_requirement"]))
         else:
             await client.send_message(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
     else:
@@ -225,6 +252,7 @@ async def set_up_defaults(client, message):
             settings[message.server.id]["use_stars"] = False
             settings[message.server.id]["star_channel"] = "starboard"
             settings[message.server.id]["star_emoji"] = "\N{WHITE MEDIUM STAR}"
+            settings[message.server.id]["star_requirement"] = 3
             save_settings(settings)
 
 # Add the commands to the global command table.
@@ -236,6 +264,7 @@ def setup_command_table(table):
     table["\\$startoggle"] = toggle_starboard
     table["\\$starchannel"] = set_starboard_channel
     table["\\$staremoji"] = set_starboard_emoji
+    table["\\$starreq"] = set_starboard_requirement
 
     # TODO: Work out how to add help commands for these properly
 

@@ -14,22 +14,27 @@ def load_settings():
 
 speed = 1
 
+messages = list()
+
 async def check_for_starring(client, reaction, user):
      # For simplicity
+     global messages
      load_settings()
      message = reaction.message
      star_channel = settings[message.server.id]["star_channel"]
      if settings[message.server.id]["use_stars"]:
-         reactions = 0 
-         for e in message.reactions:
-            if e.emoji == settings[message.server.id]["star_emoji"]:
-                reactions = e.count
-         if reactions >= settings[message.server.id]['star_requirement']:
-             if message.attachments:
-                filename = message.attachments[0]["filename"]
-                await client.send_file(discord.utils.get(message.server.channels, name=star_channel, type=discord.ChannelType.text), io.BytesIO(requests.get(message.attachments[0]["proxy_url"]).content), filename=filename, content="{}\n{} said in {}:\n{}\n".format(message.timestamp.strftime("%Y-%m-%d %H:%M:%S UTC"), message.author.mention, str(message.channel), message.content))
-             else:
-                await client.send_message(discord.utils.get(message.server.channels, name=star_channel, type=discord.ChannelType.text), "{}\n{} said in {}:\n{}\n".format(message.timestamp.strftime("%Y-%m-%d %H:%M:%S UTC"), message.author.mention, str(message.channel), message.content))
+        if not message in messages:
+             reactions = 0 
+             for e in message.reactions:
+                if e.emoji == settings[message.server.id]["star_emoji"]:
+                    reactions = e.count
+             if reactions >= settings[message.server.id]['star_requirement']:
+                 messages.append(message)
+                 if message.attachments:
+                    filename = message.attachments[0]["filename"]
+                    await client.send_file(discord.utils.get(message.server.channels, name=star_channel, type=discord.ChannelType.text), io.BytesIO(requests.get(message.attachments[0]["proxy_url"]).content), filename=filename, content="{}\n{} said in {}:\n{}\n".format(message.timestamp.strftime("%Y-%m-%d %H:%M:%S UTC"), message.author.mention, str(message.channel), message.content))
+                 else:
+                    await client.send_message(discord.utils.get(message.server.channels, name=star_channel, type=discord.ChannelType.text), "{}\n{} said in {}:\n{}\n".format(message.timestamp.strftime("%Y-%m-%d %H:%M:%S UTC"), message.author.mention, str(message.channel), message.content))
 
 # Now setup
 def setup_hooks(hooktable):

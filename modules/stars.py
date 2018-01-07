@@ -1,6 +1,6 @@
 # stars.py
 # Monitors messages for stars and posts them to the assigned starboard channel.
-import asyncio, discord, os, json
+import asyncio, discord, os, json, io, requests
 
 # We create a settings dict because otherwise it complains it hasn't been initialized.
 settings = dict()

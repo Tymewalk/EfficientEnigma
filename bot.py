@@ -51,7 +51,7 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    if message.author.bot and not message.author = client.user: #make sure it doesn't respond to other bots
+    if message.author.bot and not message.author == client.user: #make sure it doesn't respond to other bots
         return
     # Run through all the hooks, these get called every message:
     for hook in hook_table["message"]:
@@ -69,7 +69,8 @@ async def on_message(message):
 
 @client.event
 async def on_message_edit(old, new):
-    if message.author.bot and not message.author = client.user: #make sure it doesn't respond to other bots
+    # Since this doesn't have one message just pick the old one for checking
+    if old.author.bot and not old.author == client.user: #make sure it doesn't respond to other bots
         return
     # Run through anything that needs to be done on message edits.
     for hook in hook_table["edit"]:
@@ -77,7 +78,7 @@ async def on_message_edit(old, new):
     
 @client.event
 async def on_message_delete(message):
-    if message.author.bot and not message.author = client.user: #make sure it doesn't respond to other bots
+    if message.author.bot and not message.author == client.user: #make sure it doesn't respond to other bots
         return
     # Run through anything that needs to be done on message deletions.
     for hook in hook_table["delete"]:
@@ -85,7 +86,7 @@ async def on_message_delete(message):
 
 @client.event
 async def on_reaction_add(reaction, user):
-    if message.author.bot and not message.author = client.user: #make sure it doesn't respond to other bots
+    if message.author.bot and not message.author == client.user: #make sure it doesn't respond to other bots
         return
     # Run through anything that needs to be done on reactions being added.
     for hook in hook_table["reaction_add"]:
@@ -93,7 +94,7 @@ async def on_reaction_add(reaction, user):
 
 @client.event
 async def on_reaction_remove(reaction, user):
-    if message.author.bot and not message.author = client.user: #make sure it doesn't respond to other bots
+    if message.author.bot and not message.author == client.user: #make sure it doesn't respond to other bots
         return
     # Run through anything that needs to be done on reactions being deleted.
     for hook in hook_table["reaction_remove"]:

@@ -129,7 +129,7 @@ async def forbid_role(message, client):
                 # Don't do anything if it's all whitespace
                 await client.send_message(message.channel, ":warning: Sorry, you forgot to specify a role.")
                 return
-            role_name = re.sub("^\\\$[^\W]+ ", "", message.content)
+            role_name = re.sub("^\$[^\W]+ ", "", message.content)
             if not role_name in new_settings[message.server.id]["allowed_roles"]:
                 await client.send_message(message.channel, ":warning: The role \"{}\" is already not allowed to be self-assigned.".format(role_name))
             else:

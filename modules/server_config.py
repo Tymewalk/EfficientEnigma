@@ -116,7 +116,7 @@ async def allow_role(message, client):
     else:
         await client.send_message(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
 
-async def remove_role(message, client):
+async def forbid_role(message, client):
     if is_in_server(message):
         global settings
         is_admin = await check_if_can_edit(message.author, message, client)
@@ -260,7 +260,7 @@ def setup_command_table(table):
     table["\\$logtoggle"] = toggle_logs
     table["\\$logchannel"] = set_log_channel
     table["\\$allowrole"] = allow_role
-    table["\\$removerole"] = remove_role
+    table["\\$forbidrole"] = forbid_role
     table["\\$startoggle"] = toggle_starboard
     table["\\$starchannel"] = set_starboard_channel
     table["\\$staremoji"] = set_starboard_emoji

@@ -105,10 +105,10 @@ async def allow_role(message, client):
                 return
             role_name = re.sub("^\$[^\W]+ ", "", message.content)
             if role_name in new_settings[message.server.id]["allowed_roles"]:
-                await client.send_message(message.channel, ":warning: That role is already allowed to be assigned.")
+                await client.send_message(message.channel, ":warning: The role \"{}\" is already allowed to be self-assigned.".format(role_name))
             else:
                 new_settings[message.server.id]["allowed_roles"].append(role_name)
-                await client.send_message(message.channel, ":white_check_mark: That role can now be self-assigned by members.")
+                await client.send_message(message.channel, ":white_check_mark: The role \"{}\" can now be self-assigned by members.".format(role_name))
                 save_settings(new_settings)
                 
         else:
@@ -131,10 +131,10 @@ async def forbid_role(message, client):
                 return
             role_name = re.sub("^\\\$[^\W]+ ", "", message.content)
             if not role_name in new_settings[message.server.id]["allowed_roles"]:
-                await client.send_message(message.channel, ":warning: That role already can not be assigned.")
+                await client.send_message(message.channel, ":warning: The role \"{}\" is already not allowed to be self-assigned.".format(role_name))
             else:
                 new_settings[message.server.id]["allowed_roles"].append(role_name)
-                await client.send_message(message.channel, ":white_check_mark: That role can no longer be self-assigned by members.")
+                await client.send_message(message.channel, ":white_check_mark: The role \"{}\" can no longer be self-assigned by members.".format(role_name))
                 save_settings(new_settings)  
         else:
             await client.send_message(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))

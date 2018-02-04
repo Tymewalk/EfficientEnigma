@@ -133,7 +133,7 @@ async def forbid_role(message, client):
             if not role_name in new_settings[message.server.id]["allowed_roles"]:
                 await client.send_message(message.channel, ":warning: The role \"{}\" is already not allowed to be self-assigned.".format(role_name))
             else:
-                new_settings[message.server.id]["allowed_roles"].append(role_name)
+                new_settings[message.server.id]["allowed_roles"].remove(role_name)
                 await client.send_message(message.channel, ":white_check_mark: The role \"{}\" can no longer be self-assigned by members.".format(role_name))
                 save_settings(new_settings)  
         else:

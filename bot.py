@@ -86,16 +86,12 @@ async def on_message_delete(message):
 
 @client.event
 async def on_reaction_add(reaction, user):
-    if message.author.bot and not message.author == client.user: #make sure it doesn't respond to other bots
-        return
     # Run through anything that needs to be done on reactions being added.
     for hook in hook_table["reaction_add"]:
         await hook(client, reaction, user)
 
 @client.event
 async def on_reaction_remove(reaction, user):
-    if message.author.bot and not message.author == client.user: #make sure it doesn't respond to other bots
-        return
     # Run through anything that needs to be done on reactions being deleted.
     for hook in hook_table["reaction_remove"]:
         await hook(client, reaction, user)

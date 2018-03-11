@@ -224,15 +224,18 @@ async def set_starboard_requirement(message, client):
             except:
                 await client.send_message(message.channel, "{} Sorry, that's not an integer!".format(message.author.mention))
             finally:
-                load_settings()
-                settings = server_has_settings(settings, message)
-                if not "star_emoji" in settings[message.server.id]:
-                    settings[message.server.id]["use_stars"] = False
-                    settings[message.server.id]["star_channel"] = "starboard"
-                    settings[message.server.id]["star_emoji"] = "\N{WHITE MEDIUM STAR}"
-                settings[message.server.id]["star_requirement"] = star_count
-                save_settings(settings)
-                await client.send_message(message.channel, "{} Star requirement set to {}".format(message.author.mention, settings[message.server.id]["star_requirement"]))
+                if star_count >= 1:
+                    load_settings()
+                    settings = server_has_settings(settings, message)
+                    if not "star_emoji" in settings[message.server.id]:
+                        settings[message.server.id]["use_stars"] = False
+                        settings[message.server.id]["star_channel"] = "starboard"
+                        settings[message.server.id]["star_emoji"] = "\N{WHITE MEDIUM STAR}"
+                    settings[message.server.id]["star_requirement"] = star_count
+                    save_settings(settings)
+                    await client.send_message(message.channel, "{} Star requirement set to {}".format(message.author.mention, settings[message.server.id]["star_requirement"]))
+                else:
+                   await client.send_message(message.channel, "{} The number of stars required needs to be at least 1.".format(message.author.mention)) 
         else:
             await client.send_message(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
     else:

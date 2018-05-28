@@ -20,7 +20,7 @@ hook_table["reaction_remove"] = list()
 # This is the help table - it controls all the help descriptions.
 help_table = dict()
 
-import modules.util, modules.dice, modules.roles, modules.nostalgia, modules.server_config, modules.logging, modules.stars
+import modules.util, modules.dice, modules.roles, modules.nostalgia, modules.server_config, modules.messagelog, modules.stars
 
 # Set up command tables
 # Most of them also get a help table passed in, to set up the help descriptions
@@ -31,7 +31,7 @@ modules.nostalgia.setup_command_table(command_table, help_table)
 modules.server_config.setup_command_table(command_table)
 
 # Set up hook tables
-modules.logging.setup_hooks(hook_table)
+modules.messagelog.setup_hooks(hook_table)
 modules.server_config.setup_hooks(hook_table)
 modules.stars.setup_hooks(hook_table)
 

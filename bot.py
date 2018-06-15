@@ -1,6 +1,6 @@
 # bot.py
 # Houses the main code that the modules run off of.
-import discord, asyncio, os, re, json
+import discord, asyncio, os, re, json, aiohttp
 
 # Load the settings - we need this for the token
 f = open("{}/{}".format(os.path.dirname(os.path.realpath(__file__)), "settings.json"))
@@ -36,6 +36,7 @@ modules.server_config.setup_hooks(hook_table)
 modules.stars.setup_hooks(hook_table)
 
 client = discord.Client()
+aiosession = aiohttp.ClientSession(loop=client.loop)
 
 bot_token = settings["token"].lstrip().rstrip()
 

@@ -36,7 +36,6 @@ modules.server_config.setup_hooks(hook_table)
 modules.stars.setup_hooks(hook_table)
 
 client = discord.Client()
-aiosession = aiohttp.ClientSession(loop=client.loop)
 
 bot_token = settings["token"].lstrip().rstrip()
 

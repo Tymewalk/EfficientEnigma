@@ -2,9 +2,9 @@ import aiohttp, time
 
 # util.py
 # Various utilities, such as !ping.
-aiosession = aiohttp.ClientSession(loop=client.loop)
 
 async def ping(message, client):
+    aiosession = aiohttp.ClientSession(loop=client.loop)
     start = time.time()
     async with aiosession.get('https://discordapp.com'):
         duration = time.time() - start

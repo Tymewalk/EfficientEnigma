@@ -24,7 +24,7 @@ async def log_message_edit(client, old, new):
         if settings[old.server.id]["use_logging"] == True:
             log_channel = settings[old.server.id]["log_channel"]
             if not old.content == new.content:
-                await client.send_message(discord.utils.get(old.server.channels, name=log_channel, type=discord.ChannelType.text), "{}\nUser {} edited their message in {}:\nOld: {}\nNew: {}".format(new.edited_timestamp.strftime("%Y-%m-%d %H:%M:%S UTC"), str(old.author), str(old.channel), old.content, new.content))
+                await client.send_message(discord.utils.get(old.server.channels, name=log_channel, type=discord.ChannelType.text), "{}\nUser {} (ID {}) edited their message in {}:\nOld: {}\nNew: {}".format(new.edited_timestamp.strftime("%Y-%m-%d %H:%M:%S UTC"), str(old.author), old.author.id, str(old.channel), old.content, new.content))
 
 async def log_message_delete(client, message):
     # Log message deletions.
@@ -35,9 +35,9 @@ async def log_message_delete(client, message):
             if message.channel.name is not settings[message.server.id]["log_channel"]:
                 if message.attachments:
                     filename = message.attachments[0]["filename"]
-                    await client.send_file(discord.utils.get(message.server.channels, name=log_channel, type=discord.ChannelType.text), io.BytesIO(requests.get(message.attachments[0]["proxy_url"]).content), filename=filename, content="{}\nMessage by {} was deleted in {}:\n{}\n".format(message.timestamp.strftime("%Y-%m-%d %H:%M:%S UTC"), str(message.author), str(message.channel), message.content))
+                    await client.send_file(discord.utils.get(message.server.channels, name=log_channel, type=discord.ChannelType.text), io.BytesIO(requests.get(message.attachments[0]["proxy_url"]).content), filename=filename, content="{}\nMessage by {} (ID {}) was deleted in {}:\n{}\n".format(message.timestamp.strftime("%Y-%m-%d %H:%M:%S UTC"), str(message.author), message.author.id, str(message.channel), message.content))
                 else:
-                    await client.send_message(discord.utils.get(message.server.channels, name=log_channel, type=discord.ChannelType.text), "{}\nMessage by {} was deleted in {}:\n{}\n".format(message.timestamp.strftime("%Y-%m-%d %H:%M:%S UTC"), str(message.author), str(message.channel), message.content))
+                    await client.send_message(discord.utils.get(message.server.channels, name=log_channel, type=discord.ChannelType.text), "{}\nMessage by {} (ID {}) was deleted in {}:\n{}\n".format(message.timestamp.strftime("%Y-%m-%d %H:%M:%S UTC"), str(message.author), message.author.id, str(message.channel), message.content))
 
 # Now setup
 def setup_hooks(hooktable):

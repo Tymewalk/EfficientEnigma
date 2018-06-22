@@ -57,9 +57,16 @@ async def toggle_logs(message, client):
             if not "use_logging" in settings[message.server.id]:
                 settings[message.server.id]["use_logging"] = True
                 settings[message.server.id]["log_channel"] = "modlog"
-            settings[message.server.id]["use_logging"] = not settings[message.server.id]["use_logging"]
+            if re.search("on$", message.content.rstrip()):
+                settings[message.server.id]["use_logging"] = True
+                await client.send_message(message.channel, "{} Logging enabled. Messages will be logged in {}".format(message.author.mention, settings[message.server.id]["log_channel"]))
+            elif re.search("off$", message.content.rstrip()):
+                settings[message.server.id]["use_logging"] = False
+                await client.send_message(message.channel, "{} Logging disabled.".format(message.author.mention))
+            else:
+                await client.send_message(message.channel, "{} Sorry, you need to specify \"on\" or \"off\"!".format(message.author.mention))
+            
             save_settings(settings)
-            await client.send_message(message.channel, "{} Logging set to {}".format(message.author.mention, settings[message.server.id]["use_logging"]))
         else:
             await client.send_message(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
     else:
@@ -154,9 +161,15 @@ async def toggle_starboard(message, client):
                 settings[message.server.id]["star_channel"] = "starboard"
                 settings[message.server.id]["star_emoji"] = "\N{WHITE MEDIUM STAR}"
                 settings[message.server.id]["star_requirement"] = 3
-            settings[message.server.id]["use_stars"] = not settings[message.server.id]["use_stars"]
+            if re.search("on$", message.content.rstrip()):
+                settings[message.server.id]["use_stars"] = True
+                await client.send_message(message.channel, "{} Starboard enabled. Messages that receive {} star(s) will be put in in {}.".format(message.author.mention, settings[message.server.id]["star_requirement"], settings[message.server.id]["star_channel"]))
+            elif re.search("off$", message.content.rstrip()):
+                settings[message.server.id]["use_stars"] = False
+                await client.send_message(message.channel, "{} Starboard disabled.".format(message.author.mention))
+            else:
+                await client.send_message(message.channel, "{} Sorry, you need to specify \"on\" or \"off\"!".format(message.author.mention))
             save_settings(settings)
-            await client.send_message(message.channel, "{} Starboard set to {}".format(message.author.mention, settings[message.server.id]["use_stars"]))
         else:
             await client.send_message(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
     else:

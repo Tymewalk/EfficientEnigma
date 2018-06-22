@@ -21,8 +21,8 @@ async def check_for_starring(client, reaction, user):
      global messages
      load_settings()
      message = reaction.message
-     star_channel = settings[message.server.id]["star_channel"]
      if settings[message.server.id]["use_stars"]:
+        star_channel = settings[message.server.id]["star_channel"]
         if not message in messages:
              reactions = 0 
              for e in message.reactions:

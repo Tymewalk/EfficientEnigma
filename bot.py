@@ -10,6 +10,7 @@ f.close()
 # This contains all the commands.
 # Commands are in the format of ("command" : function) in the table.
 command_table = dict()
+
 # Set up hooks. These get called every time something happens.
 hook_table = dict()
 hook_table["edit"] = list()
@@ -17,13 +18,16 @@ hook_table["delete"] = list()
 hook_table["message"] = list()
 hook_table["reaction_add"] = list()
 hook_table["reaction_remove"] = list()
+
 # This is the help table - it controls all the help descriptions.
 help_table = dict()
 
+# If you're adding another module, import it here.
 import modules.util, modules.dice, modules.roles, modules.nostalgia, modules.server_config, modules.messagelog, modules.stars
 
 # Set up command tables
-# Most of them also get a help table passed in, to set up the help descriptions
+# Most of them also get a help table passed in, to set up the help descriptions.
+# If you're adding another module, set up its command table here.
 modules.util.setup_command_table(command_table, help_table)
 modules.dice.setup_command_table(command_table, help_table)
 modules.roles.setup_command_table(command_table, help_table)
@@ -31,6 +35,7 @@ modules.nostalgia.setup_command_table(command_table, help_table)
 modules.server_config.setup_command_table(command_table)
 
 # Set up hook tables
+# If you're adding another module and it uses hooks, set them up here.
 modules.messagelog.setup_hooks(hook_table)
 modules.server_config.setup_hooks(hook_table)
 modules.stars.setup_hooks(hook_table)

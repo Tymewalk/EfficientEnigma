@@ -1,6 +1,6 @@
 # bot.py
 # Houses the main code that the modules run off of.
-import discord, asyncio, os, re, json
+import discord, asyncio, os, re, json, aiohttp
 
 # Load the settings - we need this for the token
 f = open("{}/{}".format(os.path.dirname(os.path.realpath(__file__)), "settings.json"))

@@ -100,11 +100,7 @@ async def remove_role(message, client):
         await client.send_message(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
 
 # Add the commands to the global command table.
-def setup_command_table(table, helptable):
+def setup_command_table(table):
     table["!giverole"] = give_role
     table["!removerole"] = remove_role
     table["!listroles"] = list_roles
-
-    helptable["!giverole"] = "Gives you a role."
-    helptable["!removerole"] = "Removes a role from you."
-    helptable["!listroles"] = "Lists all the roles that can be given."

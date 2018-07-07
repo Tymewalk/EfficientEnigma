@@ -52,7 +52,5 @@ async def nostalgia(message, client):
             await client.send_message(message.channel, "At {}, {} said:\n\n{}".format(rand_message.timestamp.strftime("%Y-%m-%d %H:%M:%S UTC"), rand_message.author.name, output))
 
 # Add the commands to the global command table.
-def setup_command_table(table, helptable):
+def setup_command_table(table):
     table["!nostalgia"] = nostalgia
-
-    helptable["!nostalgia"] = "Look at past messages from different channels, and relive the moment."

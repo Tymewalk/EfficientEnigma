@@ -3,7 +3,7 @@
 
 async def help(message, client):
 	# TEMPORARY - WILL BE REMOVED SOON
-    print("""Here's a list of what I can do:
+    await client.send_message(message.channel, """Here's a list of what I can do:
 !nostalgia - Look at past messages from different channels, and relive the moment.
 !8ball - Ask a question, get an answer!
 !giverole - Gives you a role.

@@ -20,10 +20,9 @@ hook_table["reaction_add"] = list()
 hook_table["reaction_remove"] = list()
 
 # If you're adding another module, import it here.
-import modules.util, modules.dice, modules.roles, modules.nostalgia, modules.server_config, modules.messagelog, modules.stars, modules.about
+import modules.util, modules.dice, modules.roles, modules.nostalgia, modules.server_config, modules.messagelog, modules.stars, modules.about, modules.help
 
 # Set up command tables
-# Most of them also get a help table passed in, to set up the help descriptions.
 # If you're adding another module, set up its command table here.
 modules.util.setup_command_table(command_table)
 modules.dice.setup_command_table(command_table)
@@ -31,6 +30,7 @@ modules.roles.setup_command_table(command_table)
 modules.nostalgia.setup_command_table(command_table)
 modules.server_config.setup_command_table(command_table)
 modules.about.setup_command_table(command_table)
+modules.help.setup_command_table(command_table)
 
 # Set up hook tables
 # If you're adding another module and it uses hooks, set them up here.

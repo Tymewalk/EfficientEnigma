@@ -155,21 +155,21 @@ async def toggle_starboard(message, client):
         is_admin = await check_if_can_edit(message.author, message, client)
         if is_admin:
             load_settings()
-            settings = server_has_settings(settings, message)
+            new_settings = server_has_settings(settings, message)
             if not "use_stars" in settings[message.server.id]:
-                settings[message.server.id]["use_stars"] = False
-                settings[message.server.id]["star_channel"] = "starboard"
-                settings[message.server.id]["star_emoji"] = "\N{WHITE MEDIUM STAR}"
+                new_settings[message.server.id]["use_stars"] = False
+                new_settings[message.server.id]["star_channel"] = "starboard"
+                new_settings[message.server.id]["star_emoji"] = "\N{WHITE MEDIUM STAR}"
                 settings[message.server.id]["star_requirement"] = 3
             if re.search("on$", message.content.rstrip()):
-                settings[message.server.id]["use_stars"] = True
+                new_settings[message.server.id]["use_stars"] = True
                 await client.send_message(message.channel, "{} Starboard enabled. Messages that receive {} star(s) will be put in in {}.".format(message.author.mention, settings[message.server.id]["star_requirement"], settings[message.server.id]["star_channel"]))
             elif re.search("off$", message.content.rstrip()):
-                settings[message.server.id]["use_stars"] = False
+                new_settings[message.server.id]["use_stars"] = False
                 await client.send_message(message.channel, "{} Starboard disabled.".format(message.author.mention))
             else:
                 await client.send_message(message.channel, "{} Sorry, you need to specify \"on\" or \"off\"!".format(message.author.mention))
-            save_settings(settings)
+            save_settings(new_settings)
         else:
             await client.send_message(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
     else:

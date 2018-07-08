@@ -185,7 +185,7 @@ async def set_starboard_channel(message, client):
                 # Get the name of the channel - that should be all we need
                 star_channel = message.server.get_channel(re.sub("[\<\#\>]", "", re.findall("<#[0-9]+>", message.content)[0])).name
             else:
-                await client.send_message(message.channel, "{} Please specify a starboard channel by typing `#name_of_channel`.")
+                await client.send_message(message.channel, "{} Please specify a starboard channel by typing `#name_of_channel`.".format(message.author.mention))
                 return False
             
             load_settings()

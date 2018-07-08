@@ -232,6 +232,7 @@ async def set_starboard_requirement(message, client):
         is_admin = await check_if_can_edit(message.author, message, client)
         if is_admin:
             # First one removes the command's name, second filters any whitespace Discord adds to the end.
+            star_count = 0
             try:
                 star_count = int(re.sub("^\$\S+ ", "", re.sub("\s+$", "",  message.content)))
             except:

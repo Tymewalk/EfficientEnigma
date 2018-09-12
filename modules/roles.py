@@ -48,6 +48,7 @@ async def give_role(client, message):
                 else:
                         await client.send_message(message.channel, ":warning: You already have that role.")
             else:
+                # This message should never occur, because server_config.py checks if a role exists before giving it
                 await client.send_message(message.channel, ":no_entry: That role is in the allowed roles list, but does not actually exist.\nPlease notify the bot admin.")
     else:
         await client.send_message(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
@@ -95,6 +96,7 @@ async def remove_role(client, message):
                 else:
                         await client.send_message(message.channel, ":warning: You don't have that role.")
             else:
+                # This message should never occur, because server_config.py checks if a role exists before giving it
                 await client.send_message(message.channel, ":no_entry: That role is in the allowed roles list, but does not actually exist.\nPlease notify the bot admin.")
     else:
         await client.send_message(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))

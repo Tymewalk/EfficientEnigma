@@ -111,13 +111,17 @@ async def allow_role(client, message):
                 await client.send_message(message.channel, ":warning: Sorry, you forgot to specify a role.")
                 return
             role_name = re.sub("^\$[^\W]+ ", "", message.content)
-            if role_name in new_settings[message.server.id]["allowed_roles"]:
-                await client.send_message(message.channel, ":warning: The role \"{}\" is already allowed to be self-assigned.".format(role_name))
+            role = discord.utils.get(message.server.roles, name=role_name)
+            # Check if the role exists before adding it
+            if role:
+                if role_name in new_settings[message.server.id]["allowed_roles"]:
+                    await client.send_message(message.channel, ":warning: The role \"{}\" is already allowed to be self-assigned.".format(role_name))
+                else:
+                    new_settings[message.server.id]["allowed_roles"].append(role_name)
+                    await client.send_message(message.channel, ":white_check_mark: The role \"{}\" can now be self-assigned by members.".format(role_name))
+                    save_settings(new_settings)
             else:
-                new_settings[message.server.id]["allowed_roles"].append(role_name)
-                await client.send_message(message.channel, ":white_check_mark: The role \"{}\" can now be self-assigned by members.".format(role_name))
-                save_settings(new_settings)
-                
+                await client.send_message(message.channel, ":no_entry: The role \"{}\" does not exist. Please create it before allowing it to be self-assigned.".format(role_name))  
         else:
             await client.send_message(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
     else:

@@ -59,7 +59,7 @@ async def on_message(message):
     # The modules specify what commands they run - so we just loop through and check    
     for command in command_table:
         if re.search("^{}".format(command), message.content):
-            await command_table[command](message, client)
+            await command_table[command](client, message)
 
 @client.event
 async def on_message_edit(old, new):

@@ -31,7 +31,7 @@ def is_in_server(message):
     # Check if we're in a server.
     return message.server is not None
 
-async def check_if_can_edit(user, message, client):
+async def check_if_can_edit(user, client, message):
     # Does this user have permission to change admin stuff?
     # We need a message so we can properly check if they can.
     found_admin = False
@@ -46,11 +46,11 @@ async def check_if_can_edit(user, message, client):
     result = discord.utils.get(message.server.roles, name=admin_role_name) in user.roles
     return result
     
-async def toggle_logs(message, client):
+async def toggle_logs(client, message):
     if is_in_server(message):
         # Toggles logs on and off, simple as that.
         global settings
-        is_admin = await check_if_can_edit(message.author, message, client)
+        is_admin = await check_if_can_edit(message.author, client, message)
         if is_admin:
             load_settings()
             settings = server_has_settings(settings, message)
@@ -72,11 +72,11 @@ async def toggle_logs(message, client):
     else:
         await client.send_message(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
 
-async def set_log_channel(message, client):
+async def set_log_channel(client, message):
     # Set the channel to log edits and deletions in.
     if is_in_server(message):
         global settings
-        is_admin = await check_if_can_edit(message.author, message, client)
+        is_admin = await check_if_can_edit(message.author, client, message)
         if is_admin:
             if re.findall("<#[0-9]+>", message.content):
                 # Get the name of the channel - that should be all we need
@@ -97,10 +97,10 @@ async def set_log_channel(message, client):
     else:
         await client.send_message(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
 
-async def allow_role(message, client):
+async def allow_role(client, message):
     if is_in_server(message):
         global settings
-        is_admin = await check_if_can_edit(message.author, message, client)
+        is_admin = await check_if_can_edit(message.author, client, message)
         if is_admin:
             load_settings()
             new_settings = server_has_settings(settings, message)
@@ -123,10 +123,10 @@ async def allow_role(message, client):
     else:
         await client.send_message(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
 
-async def forbid_role(message, client):
+async def forbid_role(client, message):
     if is_in_server(message):
         global settings
-        is_admin = await check_if_can_edit(message.author, message, client)
+        is_admin = await check_if_can_edit(message.author, client, message)
         if is_admin:
             load_settings()
             new_settings = server_has_settings(settings, message)
@@ -148,11 +148,11 @@ async def forbid_role(message, client):
     else:
         await client.send_message(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
 
-async def toggle_starboard(message, client):
+async def toggle_starboard(client, message):
     if is_in_server(message):
         # Toggles logs on and off, simple as that.
         global settings
-        is_admin = await check_if_can_edit(message.author, message, client)
+        is_admin = await check_if_can_edit(message.author, client, message)
         if is_admin:
             load_settings()
             new_settings = server_has_settings(settings, message)
@@ -175,11 +175,11 @@ async def toggle_starboard(message, client):
     else:
         await client.send_message(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
 
-async def set_starboard_channel(message, client):
+async def set_starboard_channel(client, message):
     # Set the channel to log edits and deletions in.
     if is_in_server(message):
         global settings
-        is_admin = await check_if_can_edit(message.author, message, client)
+        is_admin = await check_if_can_edit(message.author, client, message)
         if is_admin:
             if re.findall("<#[0-9]+>", message.content):
                 # Get the name of the channel - that should be all we need
@@ -202,11 +202,11 @@ async def set_starboard_channel(message, client):
     else:
         await client.send_message(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
 
-async def set_starboard_emoji(message, client):
+async def set_starboard_emoji(client, message):
     # Set the channel to log stars in.
     if is_in_server(message):
         global settings
-        is_admin = await check_if_can_edit(message.author, message, client)
+        is_admin = await check_if_can_edit(message.author, client, message)
         if is_admin:
             # First one removes the command's name, second filters any whitespace Discord adds to the end.
             star_emoji = re.sub("^\$\S+ ", "", re.sub("\s+$", "",  message.content))
@@ -225,11 +225,11 @@ async def set_starboard_emoji(message, client):
     else:
         await client.send_message(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
 
-async def set_starboard_requirement(message, client):
+async def set_starboard_requirement(client, message):
     # Set the number of reactions necessary before starring.
     if is_in_server(message):
         global settings
-        is_admin = await check_if_can_edit(message.author, message, client)
+        is_admin = await check_if_can_edit(message.author, client, message)
         if is_admin:
             # First one removes the command's name, second filters any whitespace Discord adds to the end.
             star_count = 0

@@ -11,11 +11,11 @@ eight_ball_phrases = [
     "No", "Of course not", "Never", "Absolutely not", "Not a chance"
     ]
 
-async def magic_eight_ball(message, client):
+async def magic_eight_ball(client, message):
     # Magic 8 Ball - ask a question, get an answer.
     await client.send_message(message.channel, "{} {}".format(message.author.mention, random.choice(eight_ball_phrases)))
 
-async def roll(message, client):
+async def roll(client, message):
     # Roll dice.
     args = message.content.split(sep=' ')
     # Ignore args[0] - it's !roll

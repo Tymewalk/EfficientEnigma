@@ -3,7 +3,7 @@
 import random, calendar, re, discord.utils, time, requests, io
 from datetime import datetime
 
-async def nostalgia(message, client):
+async def nostalgia(client, message):
     # Pulls up a random message.
     searchin = False
     cansearch = True

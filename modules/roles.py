@@ -19,7 +19,7 @@ def is_in_server(message):
     # Check if we're in a server.
     return message.server is not None
 
-async def give_role(message, client):
+async def give_role(client, message):
     # Gives a user a role.
     if is_in_server(message):
         load_settings()
@@ -52,7 +52,7 @@ async def give_role(message, client):
     else:
         await client.send_message(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
 
-async def list_roles(message, client):
+async def list_roles(client, message):
     # List the roles the user can assign themselves.
     if is_in_server(message):
         load_settings()
@@ -66,7 +66,7 @@ async def list_roles(message, client):
     else:
         await client.send_message(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
 
-async def remove_role(message, client):
+async def remove_role(client, message):
     # Removes a role from a user.
     if is_in_server(message):
         load_settings()
@@ -91,7 +91,7 @@ async def remove_role(message, client):
                         await client.remove_roles(message.author, role)
                         await client.send_message(message.channel, ":white_check_mark: Successfully removed role {0}".format(role.name))
                     except discord.Forbidden as e:
-                        await client.send_message(message.channel, ":no_entry: I don't have permission to remove that role, even though it's in the allowed roles list.\nPlease notify the bot admin.")
+                        await client.send_message(message.channel, ":no_entry: I don't have permission to remove that role, even though it's in the allowed roles list.\nPlease notify the server's administrators.")
                 else:
                         await client.send_message(message.channel, ":warning: You don't have that role.")
             else:

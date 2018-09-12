@@ -22,7 +22,7 @@ If your server lets you self-assign roles, you'll be able to use these commands.
 !giverole (role name) - Gives you a role.
 !removerole (role name) - Removes a role from you."""
 
-async def help(message, client):
+async def help(client, message):
 	# If the length of the message is more than 6 characters, someone specified a page they'd like
     if len(message.content) > 6:
     	page = re.sub("!help ", "", message.content)

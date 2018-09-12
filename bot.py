@@ -19,21 +19,18 @@ hook_table["message"] = list()
 hook_table["reaction_add"] = list()
 hook_table["reaction_remove"] = list()
 
-# This is the help table - it controls all the help descriptions.
-help_table = dict()
-
 # If you're adding another module, import it here.
-import modules.util, modules.dice, modules.roles, modules.nostalgia, modules.server_config, modules.messagelog, modules.stars, modules.about
+import modules.util, modules.dice, modules.roles, modules.nostalgia, modules.server_config, modules.messagelog, modules.stars, modules.about, modules.help
 
 # Set up command tables
-# Most of them also get a help table passed in, to set up the help descriptions.
 # If you're adding another module, set up its command table here.
-modules.util.setup_command_table(command_table, help_table)
-modules.dice.setup_command_table(command_table, help_table)
-modules.roles.setup_command_table(command_table, help_table)
-modules.nostalgia.setup_command_table(command_table, help_table)
+modules.util.setup_command_table(command_table)
+modules.dice.setup_command_table(command_table)
+modules.roles.setup_command_table(command_table)
+modules.nostalgia.setup_command_table(command_table)
 modules.server_config.setup_command_table(command_table)
-modules.about.setup_command_table(command_table, help_table)
+modules.about.setup_command_table(command_table)
+modules.help.setup_command_table(command_table)
 
 # Set up hook tables
 # If you're adding another module and it uses hooks, set them up here.
@@ -44,11 +41,6 @@ modules.stars.setup_hooks(hook_table)
 client = discord.Client()
 
 bot_token = settings["token"].lstrip().rstrip()
-
-help_command = str()
-# Loop through, list all the commands
-for command in help_table:
-    help_command += "{} - {}\n".format(command, help_table[command])
 
 @client.event
 async def on_ready():
@@ -68,10 +60,6 @@ async def on_message(message):
     for command in command_table:
         if re.search("^{}".format(command), message.content):
             await command_table[command](message, client)
-
-    # The exception is !help - this one gets generated automatically above
-    if re.search("^!help", message.content):
-        await client.send_message(message.channel, "{} {}".format(message.author.mention, help_command))
 
 @client.event
 async def on_message_edit(old, new):

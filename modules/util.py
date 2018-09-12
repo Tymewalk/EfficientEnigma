@@ -13,7 +13,5 @@ async def ping(message, client):
     aiosession.close()
 
 # Add the commands to the global command table.
-def setup_command_table(table, helptable):
+def setup_command_table(table):
     table["!ping"] = ping
-
-    helptable["!ping"] = "Simple ping. That's all."

@@ -259,6 +259,37 @@ async def set_starboard_requirement(client, message):
     else:
         await client.send_message(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
 
+async def show_settings(client, message):
+    if is_in_server(message):
+        global settings
+        is_admin = await check_if_can_edit(message.author, client, message)
+        if is_admin:
+            load_settings()
+            settings = server_has_settings(settings, message)
+            settings_display = "**Settings for {}**\n".format(message.server.name)
+            # Assemble the settings output
+            allowed_roles = settings[message.server.id]["allowed_roles"]
+            role_list = ""
+            for role in allowed_roles:
+                role_list += "{}, ".format(role)
+            role_list = role_list[:-2]
+            if role_list == "":
+                role_list = "None"
+            settings_display += "Roles Allowed: {}\n".format(role_list)
+            if settings[message.server.id]["use_stars"]:
+                settings_display += "Starboard: Enabled\nStarboard Requirement: {}\nStarboard Emoji: {}\nStarboard Channel: {}\n".format(settings[message.server.id]["star_requirement"], settings[message.server.id]["star_emoji"], settings[message.server.id]["star_channel"])
+            else:
+                settings_display += "Starboard: Disabled\n"
+            if settings[message.server.id]["use_logging"]:
+                settings_display += "Logging: Enabled\nLog Channel: {}".format(settings[message.server.id]["log_channel"])
+            else:
+                settings_display += "Logging: Disabled\n"
+            await client.send_message(message.channel, settings_display)
+        else:
+            await client.send_message(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
+    else:
+        await client.send_message(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
+
 async def set_up_defaults(client, message):
     if is_in_server(message):
         # If we're not in a server, every command crashes, as it tries to grab a server ID where there is none.
@@ -286,6 +317,7 @@ def setup_command_table(table):
     table["\\$starchannel"] = set_starboard_channel
     table["\\$staremoji"] = set_starboard_emoji
     table["\\$starreq"] = set_starboard_requirement
+    table["\\$settings"] = show_settings
 
     # TODO: Work out how to add help commands for these properly
 

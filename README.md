@@ -27,6 +27,8 @@ Anyone with a role titled "EfficientEnigma Admin" may use the bot's internal con
 
 ## List of Admin commands
 
+$settings - Display the current server's settings.
+
 $logtoggle (on/off) - Turns message edit/deletion logging on and off. Default: off
 
 $logchannel #(channel) - Sets the channel that edit/deletion messages will be logged in. Default: modlog

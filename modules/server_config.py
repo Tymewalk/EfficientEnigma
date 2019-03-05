@@ -86,9 +86,6 @@ async def toggle_logs(client, message):
         if is_admin:
             load_settings()
             settings = server_has_settings(settings, message)
-            if not "use_logging" in settings[message.server.id]:
-                settings[message.server.id]["use_logging"] = True
-                settings[message.server.id]["log_channel"] = "modlog"
             if re.search("on$", message.content.rstrip()):
                 settings[message.server.id]["use_logging"] = True
                 await client.send_message(message.channel, "{} Logging enabled. Messages will be logged in {}".format(message.author.mention, settings[message.server.id]["log_channel"]))
@@ -119,8 +116,6 @@ async def set_log_channel(client, message):
             
             load_settings()
             settings = server_has_settings(settings, message)
-            if not "log_channel" in settings[message.server.id]:
-                settings[message.server.id]["use_logging"] = True
             settings[message.server.id]["log_channel"] = log_channel
             save_settings(settings)
             await client.send_message(message.channel, "{} Log channel set to {}".format(message.author.mention, settings[message.server.id]["log_channel"]))
@@ -192,11 +187,6 @@ async def toggle_starboard(client, message):
         if is_admin:
             load_settings()
             new_settings = server_has_settings(settings, message)
-            if not "use_stars" in settings[message.server.id]:
-                new_settings[message.server.id]["use_stars"] = False
-                new_settings[message.server.id]["star_channel"] = "starboard"
-                new_settings[message.server.id]["star_emoji"] = "\N{WHITE MEDIUM STAR}"
-                settings[message.server.id]["star_requirement"] = 3
             if re.search("on$", message.content.rstrip()):
                 new_settings[message.server.id]["use_stars"] = True
                 await client.send_message(message.channel, "{} Starboard enabled. Messages that receive {} star(s) will be put in in {}.".format(message.author.mention, settings[message.server.id]["star_requirement"], settings[message.server.id]["star_channel"]))
@@ -226,10 +216,6 @@ async def set_starboard_channel(client, message):
             
             load_settings()
             settings = server_has_settings(settings, message)
-            if not "star_channel" in settings[message.server.id]:
-                settings[message.server.id]["use_stars"] = False
-                settings[message.server.id]["star_emoji"] = "\N{WHITE MEDIUM STAR}"
-                settings[message.server.id]["star_requirement"] = 3
             settings[message.server.id]["star_channel"] = star_channel
             save_settings(settings)
             await client.send_message(message.channel, "{} Starboard channel set to {}".format(message.author.mention, settings[message.server.id]["star_channel"]))
@@ -249,10 +235,6 @@ async def set_starboard_emoji(client, message):
             star_emoji = star_emoji[0] # Only one character
             load_settings()
             settings = server_has_settings(settings, message)
-            if not "star_emoji" in settings[message.server.id]:
-                settings[message.server.id]["use_stars"] = False
-                settings[message.server.id]["star_channel"] = "starboard"
-                settings[message.server.id]["star_requirement"] = 3
             settings[message.server.id]["star_emoji"] = star_emoji
             save_settings(settings)
             await client.send_message(message.channel, "{} Starboard emoji set to {}".format(message.author.mention, settings[message.server.id]["star_emoji"]))
@@ -277,10 +259,6 @@ async def set_starboard_requirement(client, message):
                 if star_count >= 1:
                     load_settings()
                     settings = server_has_settings(settings, message)
-                    if not "star_emoji" in settings[message.server.id]:
-                        settings[message.server.id]["use_stars"] = False
-                        settings[message.server.id]["star_channel"] = "starboard"
-                        settings[message.server.id]["star_emoji"] = "\N{WHITE MEDIUM STAR}"
                     settings[message.server.id]["star_requirement"] = star_count
                     save_settings(settings)
                     await client.send_message(message.channel, "{} Star requirement set to {}".format(message.author.mention, settings[message.server.id]["star_requirement"]))

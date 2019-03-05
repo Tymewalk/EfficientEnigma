@@ -25,7 +25,10 @@ async def check_for_starring(client, reaction, user):
              reactions = 0 
              for e in message.reactions:
                 if e.emoji == settings[message.server.id]["star_emoji"]:
-                    reactions = e.count
+                    reaction_users = await client.get_reaction_users(e)
+                    if not settings[message.server.id]["self_star"]:
+                        reaction_users.remove(message.author)
+                    reactions = len(reaction_users)
              if reactions >= settings[message.server.id]['star_requirement']:
                  starred_messages.append(message)
                  if message.attachments:

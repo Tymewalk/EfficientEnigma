@@ -70,6 +70,8 @@ async def set_up_defaults(client, message):
             settings[message.server.id]["star_emoji"] = "\N{WHITE MEDIUM STAR}"
         if not "star_requirement" in settings[message.server.id]:
             settings[message.server.id]["star_requirement"] = 3
+        if not "self_star" in settings[message.server.id]:
+            settings[message.server.id]["self_star"] = False
         if not "use_welcome" in settings[message.server.id]:
             settings[message.server.id]["use_welcome"] = False
         if not "welcome_channel" in settings[message.server.id]:
@@ -269,6 +271,28 @@ async def set_starboard_requirement(client, message):
     else:
         await client.send_message(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
 
+async def toggle_self_star(client, message):
+    if is_in_server(message):
+        # Toggles self-starring.
+        global settings
+        is_admin = await check_if_can_edit(message.author, client, message)
+        if is_admin:
+            load_settings()
+            new_settings = server_has_settings(settings, message)
+            if re.search("on$", message.content.rstrip()):
+                new_settings[message.server.id]["self_star"] = True
+                await client.send_message(message.channel, "{} Self-starring enabled. Users can now star their own posts.".format(message.author.mention))
+            elif re.search("off$", message.content.rstrip()):
+                new_settings[message.server.id]["self_star"] = False
+                await client.send_message(message.channel, "{} Self-starring disabled. Users can still star their own posts, but it will not count toward the star requirement.".format(message.author.mention))
+            else:
+                await client.send_message(message.channel, "{} Sorry, you need to specify \"on\" or \"off\"!".format(message.author.mention))
+            save_settings(new_settings)
+        else:
+            await client.send_message(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
+    else:
+        await client.send_message(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
+
 async def toggle_welcome(client, message):
     if is_in_server(message):
         # Turns the welcome message on or off.
@@ -377,6 +401,7 @@ def setup_command_table(table):
     table["\\$starchannel"] = set_starboard_channel
     table["\\$staremoji"] = set_starboard_emoji
     table["\\$starreq"] = set_starboard_requirement
+    table["\\$selfstar"] = toggle_self_star
     table["\\$welcometoggle"] = toggle_welcome
     table["\\$welcomechannel"] = set_welcome_channel
     table["\\$welcomemessage"] = set_welcome_message

@@ -44,3 +44,9 @@ $starchannel #(channel) - Sets the channel starred messages will be placed in. D
 $staremoji (emoji) - Sets the emoji users react with to star messages. Default: :star:
 
 $starreq (number) - Sets how many stars a message must get to be sent to the starboard. Default: 3
+
+$welcometoggle (on/off) - Turns the welcome message on and off. Default: off
+
+$welcomemessage (message) - Sets the messsage to be sent. <name> replaces it with the user's name, whereas <ping> pings the user. Default: <ping> Welcome to our server, <name>!
+
+$welcomechannel #(channel) - Set the channel that welcome messages get sent in. Default: welcome

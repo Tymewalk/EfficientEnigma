@@ -1,6 +1,6 @@
 # welcome.py
 # Handles the welcome message for the server.
-import discord, asyncio, re
+import discord, asyncio, re, os, json
 
 settings = dict()
 

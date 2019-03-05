@@ -52,31 +52,45 @@ async def set_up_defaults(client, message):
         # If we're not in a server, every command crashes, as it tries to grab a server ID where there is none.
         global settings
         load_settings()
+        changed = False
         if not message.server.id in settings:
             settings[message.server.id] = dict()
+            changed = True
         # If only some settings are set, the above check will fail to catch it -
         # this ensures every setting has a value.
         if not "allowed_roles" in settings[message.server.id]:
             settings[message.server.id]["allowed_roles"] = []
+            changed = True
         if not "use_logging" in settings[message.server.id]:
             settings[message.server.id]["use_logging"] = False
+            changed = True
         if not "log_channel" in settings[message.server.id]:
             settings[message.server.id]["log_channel"] = "modlog"
+            changed = True
         if not "use_stars" in settings[message.server.id]:
             settings[message.server.id]["use_stars"] = False
+            changed = True
         if not "star_channel" in settings[message.server.id]:
             settings[message.server.id]["star_channel"] = "starboard"
+            changed = True
         if not "star_emoji" in settings[message.server.id]:
             settings[message.server.id]["star_emoji"] = "\N{WHITE MEDIUM STAR}"
+            changed = True
         if not "star_requirement" in settings[message.server.id]:
             settings[message.server.id]["star_requirement"] = 3
+            changed = True
         if not "use_welcome" in settings[message.server.id]:
             settings[message.server.id]["use_welcome"] = False
+            changed = True
         if not "welcome_channel" in settings[message.server.id]:
             settings[message.server.id]["welcome_channel"] = "welcome"
+            changed = True
         if not "welcome_message" in settings[message.server.id]:
             settings[message.server.id]["welcome_message"] = "<ping> Welcome to our server, <name>!"
-        save_settings(settings)
+            changed = True
+        # Prevent issues by only saving settings if we did anything
+        if changed:
+            save_settings(settings)
     
 async def toggle_logs(client, message):
     if is_in_server(message):

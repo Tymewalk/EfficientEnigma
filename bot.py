@@ -39,6 +39,7 @@ modules.help.setup_command_table(command_table)
 modules.messagelog.setup_hooks(hook_table)
 modules.server_config.setup_hooks(hook_table)
 modules.stars.setup_hooks(hook_table)
+modules.welcome.setup_hooks(hook_table)
 
 client = discord.Client()
 

@@ -12,22 +12,22 @@ def load_settings():
     settings = json.load(f)
     f.close()
 
-messages = list()
+starred_messages = list()
 
 async def check_for_starring(client, reaction, user):
      # For simplicity
-     global messages
+     global starred_messages
      load_settings()
      message = reaction.message
      if settings[message.server.id]["use_stars"]:
         star_channel = settings[message.server.id]["star_channel"]
-        if not message in messages:
+        if not message in starred_messages:
              reactions = 0 
              for e in message.reactions:
                 if e.emoji == settings[message.server.id]["star_emoji"]:
                     reactions = e.count
              if reactions >= settings[message.server.id]['star_requirement']:
-                 messages.append(message)
+                 starred_messages.append(message)
                  if message.attachments:
                     filename = message.attachments[0]["filename"]
                     await client.send_file(discord.utils.get(message.server.channels, name=star_channel, type=discord.ChannelType.text), io.BytesIO(requests.get(message.attachments[0]["proxy_url"]).content), filename=filename, content="{}\n{} said in {}:\n{}\n".format(message.timestamp.strftime("%Y-%m-%d %H:%M:%S UTC"), message.author.mention, str(message.channel), message.content))

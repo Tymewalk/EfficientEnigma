@@ -9,7 +9,7 @@ def format_welcome_message(member, message):
 	message = re.sub("<name>", member.name, message)
 	return message
 
-async def announce_welcome(member):
+async def announce_welcome(client, member):
 	load_settings()
 	server = member.server
 	welcome_channel = settings[server.id]["welcome_channel"]

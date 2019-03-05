@@ -59,7 +59,7 @@ async def set_up_defaults(client, message):
         if not "allowed_roles" in settings[message.server.id]:
             settings[message.server.id]["allowed_roles"] = []
         if not "use_logging" in settings[message.server.id]:
-            settings[message.server.id]["use_logging"] = True
+            settings[message.server.id]["use_logging"] = False
         if not "log_channel" in settings[message.server.id]:
             settings[message.server.id]["log_channel"] = "modlog"
         if not "use_stars" in settings[message.server.id]:

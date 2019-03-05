@@ -45,6 +45,32 @@ async def check_if_can_edit(user, client, message):
 
     result = discord.utils.get(message.server.roles, name=admin_role_name) in user.roles
     return result
+
+async def set_up_defaults(client, message):
+    # Set up the default settings for a server.
+    if is_in_server(message):
+        # If we're not in a server, every command crashes, as it tries to grab a server ID where there is none.
+        global settings
+        load_settings()
+        if not message.server.id in settings:
+            settings[message.server.id] = dict()
+        # If only some settings are set, the above check will fail to catch it -
+        # this ensures every setting has a value.
+        if not "allowed_roles" in settings[message.server.id]:
+            settings[message.server.id]["allowed_roles"] = []
+        if not "use_logging" in settings[message.server.id]:
+            settings[message.server.id]["use_logging"] = True
+        if not "log_channel" in settings[message.server.id]:
+            settings[message.server.id]["log_channel"] = "modlog"
+        if not "use_stars" in settings[message.server.id]:
+            settings[message.server.id]["use_stars"] = False
+        if not "star_channel" in settings[message.server.id]:
+            settings[message.server.id]["star_channel"] = "starboard"
+        if not "star_emoji" in settings[message.server.id]:
+            settings[message.server.id]["star_emoji"] = "\N{WHITE MEDIUM STAR}"
+        if not "star_requirement" in settings[message.server.id]:
+            settings[message.server.id]["star_requirement"] = 3
+            save_settings(settings)
     
 async def toggle_logs(client, message):
     if is_in_server(message):
@@ -289,23 +315,6 @@ async def show_settings(client, message):
             await client.send_message(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
     else:
         await client.send_message(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
-
-async def set_up_defaults(client, message):
-    if is_in_server(message):
-        # If we're not in a server, every command crashes, as it tries to grab a server ID where there is none.
-        global settings
-        load_settings()
-        if not message.server.id in settings:
-            print("Had to set up default settings for server {}".format(message.server.id))
-            settings[message.server.id] = dict()
-            settings[message.server.id]["allowed_roles"] = []
-            settings[message.server.id]["use_logging"] = True
-            settings[message.server.id]["log_channel"] = "modlog"
-            settings[message.server.id]["use_stars"] = False
-            settings[message.server.id]["star_channel"] = "starboard"
-            settings[message.server.id]["star_emoji"] = "\N{WHITE MEDIUM STAR}"
-            settings[message.server.id]["star_requirement"] = 3
-            save_settings(settings)
 
 # Add the commands to the global command table.
 def setup_command_table(table):

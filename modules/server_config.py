@@ -102,17 +102,16 @@ async def toggle_logs(client, message):
         is_admin = await check_if_can_edit(message.author, client, message)
         if is_admin:
             load_settings()
-            settings = server_has_settings(settings, message)
+            new_settings = server_has_settings(settings, message)
             if re.search("on$", message.content.rstrip()):
-                settings[message.server.id]["use_logging"] = True
+                new_settings[message.server.id]["use_logging"] = True
                 await client.send_message(message.channel, "{} Logging enabled. Messages will be logged in {}".format(message.author.mention, settings[message.server.id]["log_channel"]))
             elif re.search("off$", message.content.rstrip()):
-                settings[message.server.id]["use_logging"] = False
+                new_settings[message.server.id]["use_logging"] = False
                 await client.send_message(message.channel, "{} Logging disabled.".format(message.author.mention))
             else:
                 await client.send_message(message.channel, "{} Sorry, you need to specify \"on\" or \"off\"!".format(message.author.mention))
-            
-            save_settings(settings)
+            save_settings(new_settings)
         else:
             await client.send_message(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
     else:
@@ -198,7 +197,7 @@ async def forbid_role(client, message):
 
 async def toggle_starboard(client, message):
     if is_in_server(message):
-        # Toggles logs on and off, simple as that.
+        # Toggles the starboard on and off, simple as that.
         global settings
         is_admin = await check_if_can_edit(message.author, client, message)
         if is_admin:
@@ -389,7 +388,7 @@ async def show_settings(client, message):
                 role_list = "None"
             settings_display += "Roles Allowed: {}\n".format(role_list)
             if settings[message.server.id]["use_stars"]:
-                settings_display += "Starboard: Enabled\nStarboard Requirement: {}\nStarboard Emoji: {}\nStarboard Channel: {}\nSelf-starring enabled?: {}".format(settings[message.server.id]["star_requirement"], settings[message.server.id]["star_emoji"], settings[message.server.id]["star_channel"], settings[message.server.id]["self_star"])
+                settings_display += "Starboard: Enabled\nStarboard Requirement: {}\nStarboard Emoji: {}\nStarboard Channel: {}\nSelf-starring enabled?: {}\n".format(settings[message.server.id]["star_requirement"], settings[message.server.id]["star_emoji"], settings[message.server.id]["star_channel"], settings[message.server.id]["self_star"])
             else:
                 settings_display += "Starboard: Disabled\n"
             if settings[message.server.id]["use_welcome"]:

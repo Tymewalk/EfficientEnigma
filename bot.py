@@ -99,7 +99,7 @@ async def on_member_join(member):
         await hook(client, member)
 
 @client.event
-async def on_member_remove(reaction, user):
+async def on_member_remove(member):
     # Run through anything that needs to be done on members leaving.
     for hook in hook_table["member_leave"]:
         await hook(client, member)

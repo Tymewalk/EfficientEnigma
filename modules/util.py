@@ -1,7 +1,6 @@
-import aiohttp, time
-
 # util.py
 # Various utilities, such as !ping.
+import aiohttp, time
 
 async def ping(client, message):
     aiosession = aiohttp.ClientSession(loop=client.loop)

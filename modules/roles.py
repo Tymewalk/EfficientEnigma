@@ -2,9 +2,6 @@
 # Role management, such as assigning and removing roles.
 import discord.utils, re, os, json
 
-# TODO: Set up config for role list
-allowed_roles = []
-
 # We create a settings dict because otherwise it complains it hasn't been initialized.
 settings = dict()
 

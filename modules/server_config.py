@@ -70,7 +70,13 @@ async def set_up_defaults(client, message):
             settings[message.server.id]["star_emoji"] = "\N{WHITE MEDIUM STAR}"
         if not "star_requirement" in settings[message.server.id]:
             settings[message.server.id]["star_requirement"] = 3
-            save_settings(settings)
+        if not "use_welcome" in settings[message.server.id]:
+            settings[message.server.id]["use_welcome"] = False
+        if not "welcome_channel" in settings[message.server.id]:
+            settings[message.server.id]["welcome_channel"] = "welcome"
+        if not "welcome_message" in settings[message.server.id]:
+            settings[message.server.id]["welcome_message"] = "<ping> Welcome to our server, <name>!"
+        save_settings(settings)
     
 async def toggle_logs(client, message):
     if is_in_server(message):

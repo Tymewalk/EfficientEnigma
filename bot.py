@@ -22,7 +22,7 @@ hook_table["member_join"] = list()
 hook_table["member_leave"] = list()
 
 # If you're adding another module, import it here.
-import modules.util, modules.dice, modules.roles, modules.nostalgia, modules.server_config, modules.messagelog, modules.stars, modules.about, modules.help
+import modules.util, modules.dice, modules.roles, modules.nostalgia, modules.server_config, modules.messagelog, modules.stars, modules.about, modules.help, modules.welcome
 
 # Set up command tables
 # If you're adding another module, set up its command table here.

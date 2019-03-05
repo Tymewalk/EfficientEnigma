@@ -70,7 +70,13 @@ async def set_up_defaults(client, message):
             settings[message.server.id]["star_emoji"] = "\N{WHITE MEDIUM STAR}"
         if not "star_requirement" in settings[message.server.id]:
             settings[message.server.id]["star_requirement"] = 3
-            save_settings(settings)
+        if not "use_welcome" in settings[message.server.id]:
+            settings[message.server.id]["use_welcome"] = False
+        if not "welcome_channel" in settings[message.server.id]:
+            settings[message.server.id]["welcome_channel"] = "welcome"
+        if not "welcome_message" in settings[message.server.id]:
+            settings[message.server.id]["welcome_message"] = "<ping> Welcome to our server, <name>!"
+        save_settings(settings)
     
 async def toggle_logs(client, message):
     if is_in_server(message):
@@ -285,6 +291,69 @@ async def set_starboard_requirement(client, message):
     else:
         await client.send_message(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
 
+async def toggle_welcome(client, message):
+    if is_in_server(message):
+        # Turns the welcome message on or off.
+        global settings
+        is_admin = await check_if_can_edit(message.author, client, message)
+        if is_admin:
+            load_settings()
+            new_settings = server_has_settings(settings, message)
+            if re.search("on$", message.content.rstrip()):
+                new_settings[message.server.id]["use_welcome"] = True
+                await client.send_message(message.channel, "{} Welcome message enabled. Welcome message is currently set to `{}`.".format(message.author.mention, settings[message.server.id]["welcome_message"]))
+            elif re.search("off$", message.content.rstrip()):
+                new_settings[message.server.id]["use_welcome"] = False
+                await client.send_message(message.channel, "{} Welcome message disabled.".format(message.author.mention))
+            else:
+                await client.send_message(message.channel, "{} Sorry, you need to specify \"on\" or \"off\"!".format(message.author.mention))
+            save_settings(new_settings)
+        else:
+            await client.send_message(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
+    else:
+        await client.send_message(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
+
+async def set_welcome_channel(client, message):
+    # Set the channel to send welcome messages in.
+    if is_in_server(message):
+        global settings
+        is_admin = await check_if_can_edit(message.author, client, message)
+        if is_admin:
+            if re.findall("<#[0-9]+>", message.content):
+                # Get the name of the channel - that should be all we need
+                welcome_channel = message.server.get_channel(re.sub("[\<\#\>]", "", re.findall("<#[0-9]+>", message.content)[0])).name
+            else:
+                await client.send_message(message.channel, "{} Please specify a welcome channel by typing `#name_of_channel`.".format(message.author.mention))
+                return False
+            
+            load_settings()
+            settings = server_has_settings(settings, message)
+            settings[message.server.id]["welcome_channel"] = welcome_channel
+            save_settings(settings)
+            await client.send_message(message.channel, "{} Welcome channel set to {}".format(message.author.mention, settings[message.server.id]["welcome_channel"]))
+        else:
+            await client.send_message(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
+    else:
+        await client.send_message(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
+
+async def set_welcome_message(client, message):
+    # Set the number of reactions necessary before starring.
+    if is_in_server(message):
+        global settings
+        is_admin = await check_if_can_edit(message.author, client, message)
+        if is_admin:
+            # First one removes the command's name, second filters any whitespace Discord adds to the end.
+            welcome_message = re.sub("^\$\S+ ", "", re.sub("\s+$", "",  message.content))
+            load_settings()
+            settings = server_has_settings(settings, message)
+            settings[message.server.id]["welcome_message"] = welcome_message
+            save_settings(settings)
+            await client.send_message(message.channel, "{} Welcome message set to `{}`".format(message.author.mention, settings[message.server.id]["welcome_message"]))
+        else:
+            await client.send_message(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
+    else:
+        await client.send_message(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
+
 async def show_settings(client, message):
     if is_in_server(message):
         global settings
@@ -306,6 +375,10 @@ async def show_settings(client, message):
                 settings_display += "Starboard: Enabled\nStarboard Requirement: {}\nStarboard Emoji: {}\nStarboard Channel: {}\n".format(settings[message.server.id]["star_requirement"], settings[message.server.id]["star_emoji"], settings[message.server.id]["star_channel"])
             else:
                 settings_display += "Starboard: Disabled\n"
+            if settings[message.server.id]["use_welcome"]:
+                settings_display += "Welcome Message: Enabled\nMessage: `{}`\nWelcome Channel: {}\n".format(settings[message.server.id]["welcome_message"], settings[message.server.id]["welcome_channel"])
+            else:
+                settings_display += "Welcome Message: Disabled\n"
             if settings[message.server.id]["use_logging"]:
                 settings_display += "Logging: Enabled\nLog Channel: {}".format(settings[message.server.id]["log_channel"])
             else:
@@ -326,6 +399,9 @@ def setup_command_table(table):
     table["\\$starchannel"] = set_starboard_channel
     table["\\$staremoji"] = set_starboard_emoji
     table["\\$starreq"] = set_starboard_requirement
+    table["\\$welcometoggle"] = toggle_welcome
+    table["\\$welcomechannel"] = set_welcome_channel
+    table["\\$welcomemessage"] = set_welcome_message
     table["\\$settings"] = show_settings
 
     # TODO: Work out how to add help commands for these properly

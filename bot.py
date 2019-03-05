@@ -18,6 +18,8 @@ hook_table["delete"] = list()
 hook_table["message"] = list()
 hook_table["reaction_add"] = list()
 hook_table["reaction_remove"] = list()
+hook_table["member_join"] = list()
+hook_table["member_leave"] = list()
 
 # If you're adding another module, import it here.
 import modules.util, modules.dice, modules.roles, modules.nostalgia, modules.server_config, modules.messagelog, modules.stars, modules.about, modules.help
@@ -89,6 +91,18 @@ async def on_reaction_remove(reaction, user):
     # Run through anything that needs to be done on reactions being deleted.
     for hook in hook_table["reaction_remove"]:
         await hook(client, reaction, user)
+
+@client.event
+async def on_member_join(member):
+    # Run through anything that needs to be done on members joining.
+    for hook in hook_table["member_join"]:
+        await hook(client, member)
+
+@client.event
+async def on_member_remove(reaction, user):
+    # Run through anything that needs to be done on members leaving.
+    for hook in hook_table["member_leave"]:
+        await hook(client, member)
 
 try:
     # If any background tasks need to run, start them here.

@@ -45,6 +45,8 @@ $staremoji (emoji) - Sets the emoji users react with to star messages. Default: 
 
 $starreq (number) - Sets how many stars a message must get to be sent to the starboard. Default: 3
 
+$selfstar (on/off) - Sets whether or not users may star their own posts to get them on the starboard. Default: off
+
 $welcometoggle (on/off) - Turns the welcome message on and off. Default: off
 
 $welcomemessage (message) - Sets the messsage to be sent. `<name>` replaces it with the user's name, whereas `<ping>` pings the user. Default: `<ping> Welcome to our server, <name>!`

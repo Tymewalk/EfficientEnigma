@@ -389,7 +389,7 @@ async def show_settings(client, message):
                 role_list = "None"
             settings_display += "Roles Allowed: {}\n".format(role_list)
             if settings[message.server.id]["use_stars"]:
-                settings_display += "Starboard: Enabled\nStarboard Requirement: {}\nStarboard Emoji: {}\nStarboard Channel: {}\n".format(settings[message.server.id]["star_requirement"], settings[message.server.id]["star_emoji"], settings[message.server.id]["star_channel"])
+                settings_display += "Starboard: Enabled\nStarboard Requirement: {}\nStarboard Emoji: {}\nStarboard Channel: {}\nSelf-starring enabled?: {}".format(settings[message.server.id]["star_requirement"], settings[message.server.id]["star_emoji"], settings[message.server.id]["star_channel"], settings[message.server.id]["self_star"])
             else:
                 settings_display += "Starboard: Disabled\n"
             if settings[message.server.id]["use_welcome"]:

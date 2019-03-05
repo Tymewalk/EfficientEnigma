@@ -12,8 +12,6 @@ def load_settings():
     settings = json.load(f)
     f.close()
 
-speed = 1
-
 messages = list()
 
 async def check_for_starring(client, reaction, user):

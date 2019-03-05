@@ -4,6 +4,13 @@ import discord, asyncio, re
 
 settings = dict()
 
+def load_settings():
+    # Load the settings.
+    global settings
+    f = open("{}/{}".format(os.path.dirname(os.path.realpath(__file__)), "../settings.json"))
+    settings = json.load(f)
+    f.close()
+
 def format_welcome_message(member, message):
 	message = re.sub("<ping>", member.mention, message)
 	message = re.sub("<name>", member.name, message)

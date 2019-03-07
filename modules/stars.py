@@ -26,7 +26,8 @@ async def check_for_starring(client, reaction, user):
              for e in message.reactions:
                 if e.emoji == settings[message.server.id]["star_emoji"]:
                     reaction_users = await client.get_reaction_users(e)
-                    if not settings[message.server.id]["self_star"]:
+                    # Make sure the author is in before removing them, or the program crashes
+                    if not settings[message.server.id]["self_star"] and message.author in reaction_users:
                         reaction_users.remove(message.author)
                     reactions = len(reaction_users)
              if reactions >= settings[message.server.id]['star_requirement']:

@@ -52,7 +52,7 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    if message.author.bot and not message.author == client.user: #make sure it doesn't respond to other bots
+    if message.author.bot: #make sure it doesn't respond to other bots
         return
     # Run through all the hooks, these get called every message:
     for hook in hook_table["message"]:
@@ -67,7 +67,7 @@ async def on_message(message):
 @client.event
 async def on_message_edit(old, new):
     # Since this doesn't have one message just pick the old one for checking
-    if old.author.bot and not old.author == client.user: #make sure it doesn't respond to other bots
+    if old.author.bot: #make sure it doesn't respond to other bots
         return
     # Run through anything that needs to be done on message edits.
     for hook in hook_table["edit"]:
@@ -75,7 +75,7 @@ async def on_message_edit(old, new):
     
 @client.event
 async def on_message_delete(message):
-    if message.author.bot and not message.author == client.user: #make sure it doesn't respond to other bots
+    if message.author.bot: #make sure it doesn't respond to other bots
         return
     # Run through anything that needs to be done on message deletions.
     for hook in hook_table["delete"]:

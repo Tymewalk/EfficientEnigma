@@ -22,7 +22,7 @@ async def roll(client, message):
     dice_args = args[1].split(sep='d')
     # There should only be two parts - XdY
     if not len(dice_args) == 2:
-        await client.send_message(message.channel, "{} Sorry, that's not a valid roll. Valid rolls are in the form XdY.",format(message.author.mention))
+        await client.send_message(message.channel, "{} Sorry, that's not a valid roll. Valid rolls are in the form XdY.".format(message.author.mention))
         return
     # Try making them ints, if we can't they're not numbers and we shouldn't be rolling them
     try:

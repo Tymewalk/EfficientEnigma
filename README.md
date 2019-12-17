@@ -10,7 +10,7 @@ Step 1: Clone the repository:
     
 Step 2: Install dependencies:
 
-    pip3 install discord-py asyncio aiohttp
+    pip3 install -r requirements.txt
     
 Step 3: Set up the bot:
 

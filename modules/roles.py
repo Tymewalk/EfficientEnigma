@@ -22,6 +22,7 @@ async def give_role(client, message):
         load_settings()
         # Grab the list of roles - they're just plaintext names
         allowed_roles = settings[message.server.id]["allowed_roles"]
+        allowed_roles.sort()
         role_list = ""
         for role in allowed_roles:
             role_list += "{}, ".format(role)
@@ -71,6 +72,7 @@ async def remove_role(client, message):
         load_settings()
         # Grab the list of roles - they're just plaintext names
         allowed_roles = settings[message.server.id]["allowed_roles"]
+        allowed_roles.sort()
         role_list = ""
         for role in allowed_roles:
             role_list += "{}, ".format(role)
@@ -102,6 +104,7 @@ async def remove_role(client, message):
 # Add the commands to the global command table.
 def setup_command_table(table):
     table["!giverole"] = give_role
+    table["!addrole"] = give_role
     table["!removerole"] = remove_role
     table["!listroles"] = list_roles
     table["!roles"] = list_roles

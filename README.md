@@ -37,6 +37,10 @@ $allowrole (role name) - Allows users to assign a role to themselves.
 
 $forbidrole (role name) - Forbids users from assigning a role to themselves.
 
+$allowadminrole (role name) - Allows users with this role to edit EfficientEnigma's settings. By default, the role "EfficientEnigma Admin" will always be allowed to edit settings. This can not be changed - otherwise, users could lock themselves out of the bot.
+
+$forbidadminrole (role name) - Forbids users with this role from editing EfficientEnigma's settings, if they were previously able to. (NOTE: If a user has another admin role, they will still be able to edit settings!)
+
 $startoggle (on/off) - Turns the starboard on and off. Default: off
 
 $starchannel #(channel) - Sets the channel starred messages will be placed in. Default: starboard

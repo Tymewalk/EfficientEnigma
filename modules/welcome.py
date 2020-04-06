@@ -1,5 +1,5 @@
 # welcome.py
-# Handles the welcome message for the server.
+# Handles weclome and member leaving messages for the server.
 import discord, asyncio, re, os, json
 
 settings = dict()

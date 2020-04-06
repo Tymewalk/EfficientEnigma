@@ -2,10 +2,6 @@
 # Allows admins of a server to configure the bot.
 import discord, asyncio, json, os, re
 
-# This should be hardcoded - that way it's the same across all servers.
-# Might change in the future if necessary.
-admin_role_name = "EfficientEnigma Admin"
-
 settings = dict()
 
 def load_settings():
@@ -36,14 +32,19 @@ async def check_if_can_edit(user, client, message):
     # We need a message so we can properly check if they can.
     found_admin = False
     for r in message.server.roles:
-        if r.name == admin_role_name:
-            found_admin = True
+        for admin_role in settings[message.server.id]["admin_roles"]:
+            if r.name == admin_role:
+                found_admin = True
+
 
     if not found_admin:
-         await client.send_message(message.channel, "{} It looks like the admin role *doesn't exist* - if you are not able to add one, please tell the server manager to add a role named \"{}\" and assign it to whoever needs it.".format(message.author.mention, admin_role_name))
+         await client.send_message(message.channel, "{} It looks like the admin role *doesn't exist* - if you are not able to add one, please tell the server manager to add a role named \"EfficientEnigma Admin\" and assign it to whoever needs it.".format(message.author.mention, admin_role_name))
          return False
 
-    result = discord.utils.get(message.server.roles, name=admin_role_name) in user.roles
+    result = False
+    for r in settings[message.server.id]["admin_roles"]:
+        if discord.utils.get(message.server.roles, name=r) in user.roles:
+            result = True
     return result
 
 async def set_up_defaults(client, message):
@@ -60,6 +61,9 @@ async def set_up_defaults(client, message):
         # this ensures every setting has a value.
         if not "allowed_roles" in settings[message.server.id]:
             settings[message.server.id]["allowed_roles"] = []
+            changed = True
+        if not "admin_roles" in settings[message.server.id]:
+            settings[message.server.id]["admin_roles"] = ["EfficientEnigma Admin"]
             changed = True
         if not "use_logging" in settings[message.server.id]:
             settings[message.server.id]["use_logging"] = False
@@ -197,6 +201,65 @@ async def forbid_role(client, message):
             else:
                 new_settings[message.server.id]["allowed_roles"].remove(role_name)
                 await client.send_message(message.channel, ":white_check_mark: The role \"{}\" can no longer be self-assigned by members.".format(role_name))
+                save_settings(new_settings)  
+        else:
+            await client.send_message(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
+    else:
+        await client.send_message(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
+        
+async def allow_admin_role(client, message):
+    if is_in_server(message):
+        global settings
+        is_admin = await check_if_can_edit(message.author, client, message)
+        if is_admin:
+            load_settings()
+            new_settings = server_has_settings(settings, message)
+            if not "admin_roles" in new_settings[message.server.id]:
+                new_settings[message.server.id]["admin_roles"] = []
+            if re.match("^\$[^\W]+( |)+$", message.content):
+                # Don't do anything if it's all whitespace
+                await client.send_message(message.channel, ":warning: Sorry, you forgot to specify a role.")
+                return
+            role_name = re.sub("^\$[^\W]+ ", "", message.content)
+            role = discord.utils.get(message.server.roles, name=role_name)
+            # Check if the role exists before adding it
+            if role:
+                if role_name in new_settings[message.server.id]["admin_roles"]:
+                    await client.send_message(message.channel, ":warning: The role \"{}\" is already an EfficientEnigma admin.".format(role_name))
+                else:
+                    new_settings[message.server.id]["admin_roles"].append(role_name)
+                    await client.send_message(message.channel, ":white_check_mark: The role \"{}\" can now edit EfficientEnigma's settings.".format(role_name))
+                    save_settings(new_settings)
+            else:
+                await client.send_message(message.channel, ":no_entry: The role \"{}\" does not exist. Please create it before allowing it to be an admin.".format(role_name))  
+        else:
+            await client.send_message(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
+    else:
+        await client.send_message(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
+
+async def forbid_admin_role(client, message):
+    if is_in_server(message):
+        global settings
+        is_admin = await check_if_can_edit(message.author, client, message)
+        if is_admin:
+            load_settings()
+            new_settings = server_has_settings(settings, message)
+            if not "admin_roles" in settings[message.server.id]:
+                new_settings[message.server.id]["admin_roles"] = []
+            if re.match("^\\\$[^\W]+( |)+$", message.content):
+                # Don't do anything if it's all whitespace
+                await client.send_message(message.channel, ":warning: Sorry, you forgot to specify a role.")
+                return
+            role_name = re.sub("^\$[^\W]+ ", "", message.content)
+            # Don't allow people to accidentally lock themselves out - EE Admin should always be allowed
+            if role_name == "EfficientEnigma Admin":
+                await client.send_message(message.channel, ":no_entry: The role \"EfficientEnigma Admin\" can not be removed. This is to prevent the admin list from being empty, locking up the bot. Sorry!")
+                return
+            if not role_name in new_settings[message.server.id]["admin_roles"]:
+                await client.send_message(message.channel, ":warning: The role \"{}\" is already not an EfficientEnigma admin".format(role_name))
+            else:
+                new_settings[message.server.id]["admin_roles"].remove(role_name)
+                await client.send_message(message.channel, ":white_check_mark: The role \"{}\" can no longer edit EfficientEnigma's settings.".format(role_name))
                 save_settings(new_settings)  
         else:
             await client.send_message(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
@@ -458,6 +521,14 @@ async def show_settings(client, message):
             if role_list == "":
                 role_list = "None"
             settings_display += "Roles Allowed: {}\n".format(role_list)
+            admin_roles = settings[message.server.id]["admin_roles"]
+            role_list = ""
+            for role in admin_roles:
+                role_list += "{}, ".format(role)
+            role_list = role_list[:-2]
+            if role_list == "":
+                role_list = "None"
+            settings_display += "Roles That Can Edit Settings: {}\n".format(role_list)
             if settings[message.server.id]["use_stars"]:
                 settings_display += "Starboard: Enabled\nStarboard Requirement: {}\nStarboard Emoji: {}\nStarboard Channel: {}\nSelf-starring allowed: {}\n".format(settings[message.server.id]["star_requirement"], settings[message.server.id]["star_emoji"], settings[message.server.id]["star_channel"], settings[message.server.id]["self_star"])
             else:
@@ -486,6 +557,8 @@ def setup_command_table(table):
     table["\\$logchannel"] = set_log_channel
     table["\\$allowrole"] = allow_role
     table["\\$forbidrole"] = forbid_role
+    table["\\$allowadminrole"] = allow_admin_role
+    table["\\$forbidadminrole"] = forbid_admin_role
     table["\\$startoggle"] = toggle_starboard
     table["\\$starchannel"] = set_starboard_channel
     table["\\$staremoji"] = set_starboard_emoji

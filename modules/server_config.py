@@ -466,6 +466,10 @@ async def show_settings(client, message):
                 settings_display += "Welcome Message: Enabled\nMessage: `{}`\nWelcome Channel: {}\n".format(settings[message.server.id]["welcome_message"], settings[message.server.id]["welcome_channel"])
             else:
                 settings_display += "Welcome Message: Disabled\n"
+            if settings[message.server.id]["use_leave"]:
+                settings_display += "Leaving Message: Enabled\nMessage: `{}`\nLeaving Channel: {}\n".format(settings[message.server.id]["leaving_message"], settings[message.server.id]["leaving_channel"])
+            else:
+                settings_display += "Leaving Message: Disabled\n"
             if settings[message.server.id]["use_logging"]:
                 settings_display += "Logging: Enabled\nLog Channel: {}".format(settings[message.server.id]["log_channel"])
             else:

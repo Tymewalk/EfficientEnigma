@@ -52,3 +52,9 @@ $welcometoggle (on/off) - Turns the welcome message on and off. Default: off
 $welcomemessage (message) - Sets the messsage to be sent. `<name>` replaces it with the user's name, whereas `<ping>` pings the user. Default: `<ping> Welcome to our server, <name>!`
 
 $welcomechannel #(channel) - Set the channel that welcome messages get sent in. Default: welcome
+
+$leavetoggle (on/off) - Turns the message when a member leaves on and off. Default: off
+
+$leavemessage (message) - Sets the messsage to be sent. `<name>` replaces it with the user's name, whereas `<ping>` pings the user. Default: `What a shame, <name> just left the server...`
+
+$leavechannel #(channel) - Set the channel that leaving messages get sent in. Default: welcome

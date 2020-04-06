@@ -90,6 +90,14 @@ async def set_up_defaults(client, message):
             changed = True
         if not "welcome_message" in settings[message.server.id]:
             settings[message.server.id]["welcome_message"] = "<ping> Welcome to our server, <name>!"
+        if not "use_leave" in settings[message.server.id]:
+            settings[message.server.id]["use_leave"] = False
+            changed = True
+        if not "leave_message" in settings[message.server.id]:
+            settings[message.server.id]["leave_message"] = "What a shame, <name> just left the server..."
+            changed = True
+        if not "leave_channel" in settings[message.server.id]:
+            settings[message.server.id]["leave_channel"] = "welcome"
             changed = True
         # Prevent issues by only saving settings if we did anything
         if changed:
@@ -370,6 +378,69 @@ async def set_welcome_message(client, message):
     else:
         await client.send_message(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
 
+async def toggle_leave(client, message):
+    if is_in_server(message):
+        # Turns the leaving message on or off.
+        global settings
+        is_admin = await check_if_can_edit(message.author, client, message)
+        if is_admin:
+            load_settings()
+            new_settings = server_has_settings(settings, message)
+            if re.search("on$", message.content.rstrip()):
+                new_settings[message.server.id]["use_leave"] = True
+                await client.send_message(message.channel, "{} Leaving message enabled. Leaving message is currently set to `{}`.".format(message.author.mention, settings[message.server.id]["leave_message"]))
+            elif re.search("off$", message.content.rstrip()):
+                new_settings[message.server.id]["use_leave"] = False
+                await client.send_message(message.channel, "{} Leaving message disabled.".format(message.author.mention))
+            else:
+                await client.send_message(message.channel, "{} Sorry, you need to specify \"on\" or \"off\"!".format(message.author.mention))
+            save_settings(new_settings)
+        else:
+            await client.send_message(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
+    else:
+        await client.send_message(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
+
+async def set_leave_channel(client, message):
+    # Set the channel to send leave messages in.
+    if is_in_server(message):
+        global settings
+        is_admin = await check_if_can_edit(message.author, client, message)
+        if is_admin:
+            if re.findall("<#[0-9]+>", message.content):
+                # Get the name of the channel - that should be all we need
+                leave_channel = message.server.get_channel(re.sub("[\<\#\>]", "", re.findall("<#[0-9]+>", message.content)[0])).name
+            else:
+                await client.send_message(message.channel, "{} Please specify a leave channel by typing `#name_of_channel`.".format(message.author.mention))
+                return False
+            
+            load_settings()
+            settings = server_has_settings(settings, message)
+            settings[message.server.id]["leave_channel"] = leave_channel
+            save_settings(settings)
+            await client.send_message(message.channel, "{} Leaving message channel set to {}".format(message.author.mention, settings[message.server.id]["leave_channel"]))
+        else:
+            await client.send_message(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
+    else:
+        await client.send_message(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
+
+async def set_leave_message(client, message):
+    # Set the number of reactions necessary before starring.
+    if is_in_server(message):
+        global settings
+        is_admin = await check_if_can_edit(message.author, client, message)
+        if is_admin:
+            # First one removes the command's name, second filters any whitespace Discord adds to the end.
+            leave_message = re.sub("^\$\S+ ", "", re.sub("\s+$", "",  message.content))
+            load_settings()
+            settings = server_has_settings(settings, message)
+            settings[message.server.id]["leave_message"] = leave_message
+            save_settings(settings)
+            await client.send_message(message.channel, "{} Leaving message set to `{}`".format(message.author.mention, settings[message.server.id]["leave_message"]))
+        else:
+            await client.send_message(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
+    else:
+        await client.send_message(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
+
 async def show_settings(client, message):
     if is_in_server(message):
         global settings
@@ -419,6 +490,9 @@ def setup_command_table(table):
     table["\\$welcometoggle"] = toggle_welcome
     table["\\$welcomechannel"] = set_welcome_channel
     table["\\$welcomemessage"] = set_welcome_message
+    table["\\$leavetoggle"] = toggle_leave
+    table["\\$leavechannel"] = set_leave_channel
+    table["\\$leavemessage"] = set_leave_message
     table["\\$settings"] = show_settings
 
     # TODO: Work out how to add help commands for these properly

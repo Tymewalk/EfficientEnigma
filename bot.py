@@ -1,6 +1,6 @@
 # bot.py
 # Houses the main code that the modules run off of.
-import discord, asyncio, os, re, json, aiohttp
+import discord, asyncio, os, re, json, aiohttp, time
 
 # Load the settings - we need this for the token
 f = open("{}/{}".format(os.path.dirname(os.path.realpath(__file__)), "settings.json"))
@@ -47,7 +47,7 @@ bot_token = settings["token"].lstrip().rstrip()
 
 @client.event
 async def on_ready():
-    print('Successfully logged in as {} (ID {}).'.format(client.user.name, client.user.id))
+    print('[{}] Successfully logged in as {} (ID {}).'.format(time.strftime("%b %d %Y %H:%M:%S", time.localtime()), client.user.name, client.user.id))
     await client.change_presence(game=discord.Game(name="Try !help"))
 
 @client.event
@@ -115,4 +115,4 @@ except KeyboardInterrupt:
 finally:
     # If anything needs to save, do it here
     # Saving settings doesn't need to be done because anything modifying them automatically saves.
-    print("EfficientEnigma is done running.")
+    print("[{}] EfficientEnigma is done running.".format(time.strftime("%b %d %Y %H:%M:%S", time.localtime())))

@@ -48,7 +48,7 @@ bot_token = settings["token"].lstrip().rstrip()
 @client.event
 async def on_ready():
     print('[{}] Successfully logged in as {} (ID {}).'.format(time.strftime("%b %d %Y %H:%M:%S", time.localtime()), client.user.name, client.user.id))
-    await client.change_presence(game=discord.Game(name="Try !help"))
+    await client.change_presence(activity=discord.Game(name="Try !help"))
 
 @client.event
 async def on_message(message):

@@ -31,13 +31,13 @@ async def help(client, message):
     	page = False
     
     if not page:
-    	await client.send_message(message.author, pagetext)
+    	await message.author.send(pagetext)
     elif page == "1":
-    	await client.send_message(message.author, generictext)
+    	await message.author.send(generictext)
     elif page == "2":
-    	await client.send_message(message.author, roletext)
+    	await message.author.send(roletext)
     else:
-    	await client.send_message(message.author, "Sorry, that's not a valid page number! Try !help to see a list of page numbers.")
+    	await message.author.send("Sorry, that's not a valid page number! Try !help to see a list of page numbers.")
     
     
     

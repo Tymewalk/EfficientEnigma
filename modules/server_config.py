@@ -38,7 +38,7 @@ async def check_if_can_edit(user, client, message):
 
 
     if not found_admin:
-         await client.send(message.channel, "{} It looks like the admin role *doesn't exist* - if you are not able to add one, please tell the server manager to add a role named \"EfficientEnigma Admin\" and assign it to whoever needs it.".format(message.author.mention, admin_role_name))
+         await message.channel.send("{} It looks like the admin role *doesn't exist* - if you are not able to add one, please tell the server manager to add a role named \"EfficientEnigma Admin\" and assign it to whoever needs it.".format(message.author.mention, admin_role_name))
          return False
 
     result = False
@@ -117,17 +117,17 @@ async def toggle_logs(client, message):
             new_settings = server_has_settings(settings, message)
             if re.search("on$", message.content.rstrip()):
                 new_settings[message.guild.id]["use_logging"] = True
-                await client.send(message.channel, "{} Logging enabled. Messages will be logged in {}".format(message.author.mention, settings[message.guild.id]["log_channel"]))
+                await message.channel.send("{} Logging enabled. Messages will be logged in {}".format(message.author.mention, settings[message.guild.id]["log_channel"]))
             elif re.search("off$", message.content.rstrip()):
                 new_settings[message.guild.id]["use_logging"] = False
-                await client.send(message.channel, "{} Logging disabled.".format(message.author.mention))
+                await message.channel.send("{} Logging disabled.".format(message.author.mention))
             else:
-                await client.send(message.channel, "{} Sorry, you need to specify \"on\" or \"off\"!".format(message.author.mention))
+                await message.channel.send("{} Sorry, you need to specify \"on\" or \"off\"!".format(message.author.mention))
             save_settings(new_settings)
         else:
-            await client.send(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
+            await message.channel.send("{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
     else:
-        await client.send(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
+        await message.channel.send("{} You need to be in a server to use this command.".format(message.author.mention))
 
 async def set_log_channel(client, message):
     # Set the channel to log edits and deletions in.
@@ -139,18 +139,18 @@ async def set_log_channel(client, message):
                 # Get the name of the channel - that should be all we need
                 log_channel = message.guild.get_channel(re.sub("[\<\#\>]", "", re.findall("<#[0-9]+>", message.content)[0])).name
             else:
-                await client.send(message.channel, "{} Please specify a logging channel by typing `#name_of_channel`.")
+                await message.channel.send("{} Please specify a logging channel by typing `#name_of_channel`.")
                 return False
             
             load_settings()
             settings = server_has_settings(settings, message)
             settings[message.guild.id]["log_channel"] = log_channel
             save_settings(settings)
-            await client.send(message.channel, "{} Log channel set to {}".format(message.author.mention, settings[message.guild.id]["log_channel"]))
+            await message.channel.send("{} Log channel set to {}".format(message.author.mention, settings[message.guild.id]["log_channel"]))
         else:
-            await client.send(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
+            await message.channel.send("{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
     else:
-        await client.send(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
+        await message.channel.send("{} You need to be in a server to use this command.".format(message.author.mention))
 
 async def allow_role(client, message):
     if is_in_server(message):
@@ -163,24 +163,24 @@ async def allow_role(client, message):
                 new_settings[message.guild.id]["allowed_roles"] = []
             if re.match("^\$[^\W]+( |)+$", message.content):
                 # Don't do anything if it's all whitespace
-                await client.send(message.channel, ":warning: Sorry, you forgot to specify a role.")
+                await message.channel.send(":warning: Sorry, you forgot to specify a role.")
                 return
             role_name = re.sub("^\$[^\W]+ ", "", message.content)
             role = discord.utils.get(message.guild.roles, name=role_name)
             # Check if the role exists before adding it
             if role:
                 if role_name in new_settings[message.guild.id]["allowed_roles"]:
-                    await client.send(message.channel, ":warning: The role \"{}\" is already allowed to be self-assigned.".format(role_name))
+                    await message.channel.send(":warning: The role \"{}\" is already allowed to be self-assigned.".format(role_name))
                 else:
                     new_settings[message.guild.id]["allowed_roles"].append(role_name)
-                    await client.send(message.channel, ":white_check_mark: The role \"{}\" can now be self-assigned by members.".format(role_name))
+                    await message.channel.send(":white_check_mark: The role \"{}\" can now be self-assigned by members.".format(role_name))
                     save_settings(new_settings)
             else:
-                await client.send(message.channel, ":no_entry: The role \"{}\" does not exist. Please create it before allowing it to be self-assigned.".format(role_name))  
+                await message.channel.send(":no_entry: The role \"{}\" does not exist. Please create it before allowing it to be self-assigned.".format(role_name))  
         else:
-            await client.send(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
+            await message.channel.send("{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
     else:
-        await client.send(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
+        await message.channel.send("{} You need to be in a server to use this command.".format(message.author.mention))
 
 async def forbid_role(client, message):
     if is_in_server(message):
@@ -193,19 +193,19 @@ async def forbid_role(client, message):
                 new_settings[message.guild.id]["allowed_roles"] = []
             if re.match("^\\\$[^\W]+( |)+$", message.content):
                 # Don't do anything if it's all whitespace
-                await client.send(message.channel, ":warning: Sorry, you forgot to specify a role.")
+                await message.channel.send(":warning: Sorry, you forgot to specify a role.")
                 return
             role_name = re.sub("^\$[^\W]+ ", "", message.content)
             if not role_name in new_settings[message.guild.id]["allowed_roles"]:
-                await client.send(message.channel, ":warning: The role \"{}\" is already not allowed to be self-assigned.".format(role_name))
+                await message.channel.send(":warning: The role \"{}\" is already not allowed to be self-assigned.".format(role_name))
             else:
                 new_settings[message.guild.id]["allowed_roles"].remove(role_name)
-                await client.send(message.channel, ":white_check_mark: The role \"{}\" can no longer be self-assigned by members.".format(role_name))
+                await message.channel.send(":white_check_mark: The role \"{}\" can no longer be self-assigned by members.".format(role_name))
                 save_settings(new_settings)  
         else:
-            await client.send(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
+            await message.channel.send("{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
     else:
-        await client.send(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
+        await message.channel.send("{} You need to be in a server to use this command.".format(message.author.mention))
         
 async def allow_admin_role(client, message):
     if is_in_server(message):
@@ -218,24 +218,24 @@ async def allow_admin_role(client, message):
                 new_settings[message.guild.id]["admin_roles"] = []
             if re.match("^\$[^\W]+( |)+$", message.content):
                 # Don't do anything if it's all whitespace
-                await client.send(message.channel, ":warning: Sorry, you forgot to specify a role.")
+                await message.channel.send(":warning: Sorry, you forgot to specify a role.")
                 return
             role_name = re.sub("^\$[^\W]+ ", "", message.content)
             role = discord.utils.get(message.guild.roles, name=role_name)
             # Check if the role exists before adding it
             if role:
                 if role_name in new_settings[message.guild.id]["admin_roles"]:
-                    await client.send(message.channel, ":warning: The role \"{}\" is already an EfficientEnigma admin.".format(role_name))
+                    await message.channel.send(":warning: The role \"{}\" is already an EfficientEnigma admin.".format(role_name))
                 else:
                     new_settings[message.guild.id]["admin_roles"].append(role_name)
-                    await client.send(message.channel, ":white_check_mark: The role \"{}\" can now edit EfficientEnigma's settings.".format(role_name))
+                    await message.channel.send(":white_check_mark: The role \"{}\" can now edit EfficientEnigma's settings.".format(role_name))
                     save_settings(new_settings)
             else:
-                await client.send(message.channel, ":no_entry: The role \"{}\" does not exist. Please create it before allowing it to be an admin.".format(role_name))  
+                await message.channel.send(":no_entry: The role \"{}\" does not exist. Please create it before allowing it to be an admin.".format(role_name))  
         else:
-            await client.send(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
+            await message.channel.send("{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
     else:
-        await client.send(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
+        await message.channel.send("{} You need to be in a server to use this command.".format(message.author.mention))
 
 async def forbid_admin_role(client, message):
     if is_in_server(message):
@@ -248,23 +248,23 @@ async def forbid_admin_role(client, message):
                 new_settings[message.guild.id]["admin_roles"] = []
             if re.match("^\\\$[^\W]+( |)+$", message.content):
                 # Don't do anything if it's all whitespace
-                await client.send(message.channel, ":warning: Sorry, you forgot to specify a role.")
+                await message.channel.send(":warning: Sorry, you forgot to specify a role.")
                 return
             role_name = re.sub("^\$[^\W]+ ", "", message.content)
             # Don't allow people to accidentally lock themselves out - EE Admin should always be allowed
             if role_name == "EfficientEnigma Admin":
-                await client.send(message.channel, ":no_entry: The role \"EfficientEnigma Admin\" can not be removed. This is to prevent the admin list from being empty, locking up the bot. Sorry!")
+                await message.channel.send(":no_entry: The role \"EfficientEnigma Admin\" can not be removed. This is to prevent the admin list from being empty, locking up the bot. Sorry!")
                 return
             if not role_name in new_settings[message.guild.id]["admin_roles"]:
-                await client.send(message.channel, ":warning: The role \"{}\" is already not an EfficientEnigma admin".format(role_name))
+                await message.channel.send(":warning: The role \"{}\" is already not an EfficientEnigma admin".format(role_name))
             else:
                 new_settings[message.guild.id]["admin_roles"].remove(role_name)
-                await client.send(message.channel, ":white_check_mark: The role \"{}\" can no longer edit EfficientEnigma's settings.".format(role_name))
+                await message.channel.send(":white_check_mark: The role \"{}\" can no longer edit EfficientEnigma's settings.".format(role_name))
                 save_settings(new_settings)  
         else:
-            await client.send(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
+            await message.channel.send("{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
     else:
-        await client.send(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
+        await message.channel.send("{} You need to be in a server to use this command.".format(message.author.mention))
 
 async def toggle_starboard(client, message):
     if is_in_server(message):
@@ -276,17 +276,17 @@ async def toggle_starboard(client, message):
             new_settings = server_has_settings(settings, message)
             if re.search("on$", message.content.rstrip()):
                 new_settings[message.guild.id]["use_stars"] = True
-                await client.send(message.channel, "{} Starboard enabled. Messages that receive {} star(s) will be put in in {}.".format(message.author.mention, settings[message.guild.id]["star_requirement"], settings[message.guild.id]["star_channel"]))
+                await message.channel.send("{} Starboard enabled. Messages that receive {} star(s) will be put in in {}.".format(message.author.mention, settings[message.guild.id]["star_requirement"], settings[message.guild.id]["star_channel"]))
             elif re.search("off$", message.content.rstrip()):
                 new_settings[message.guild.id]["use_stars"] = False
-                await client.send(message.channel, "{} Starboard disabled.".format(message.author.mention))
+                await message.channel.send("{} Starboard disabled.".format(message.author.mention))
             else:
-                await client.send(message.channel, "{} Sorry, you need to specify \"on\" or \"off\"!".format(message.author.mention))
+                await message.channel.send("{} Sorry, you need to specify \"on\" or \"off\"!".format(message.author.mention))
             save_settings(new_settings)
         else:
-            await client.send(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
+            await message.channel.send("{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
     else:
-        await client.send(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
+        await message.channel.send("{} You need to be in a server to use this command.".format(message.author.mention))
 
 async def set_starboard_channel(client, message):
     # Set the channel to log edits and deletions in.
@@ -298,18 +298,18 @@ async def set_starboard_channel(client, message):
                 # Get the name of the channel - that should be all we need
                 star_channel = message.guild.get_channel(re.sub("[\<\#\>]", "", re.findall("<#[0-9]+>", message.content)[0])).name
             else:
-                await client.send(message.channel, "{} Please specify a starboard channel by typing `#name_of_channel`.".format(message.author.mention))
+                await message.channel.send("{} Please specify a starboard channel by typing `#name_of_channel`.".format(message.author.mention))
                 return False
             
             load_settings()
             settings = server_has_settings(settings, message)
             settings[message.guild.id]["star_channel"] = star_channel
             save_settings(settings)
-            await client.send(message.channel, "{} Starboard channel set to {}".format(message.author.mention, settings[message.guild.id]["star_channel"]))
+            await message.channel.send("{} Starboard channel set to {}".format(message.author.mention, settings[message.guild.id]["star_channel"]))
         else:
-            await client.send(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
+            await message.channel.send("{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
     else:
-        await client.send(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
+        await message.channel.send("{} You need to be in a server to use this command.".format(message.author.mention))
 
 async def set_starboard_emoji(client, message):
     # Set the channel to log stars in.
@@ -324,11 +324,11 @@ async def set_starboard_emoji(client, message):
             settings = server_has_settings(settings, message)
             settings[message.guild.id]["star_emoji"] = star_emoji
             save_settings(settings)
-            await client.send(message.channel, "{} Starboard emoji set to {}".format(message.author.mention, settings[message.guild.id]["star_emoji"]))
+            await message.channel.send("{} Starboard emoji set to {}".format(message.author.mention, settings[message.guild.id]["star_emoji"]))
         else:
-            await client.send(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
+            await message.channel.send("{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
     else:
-        await client.send(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
+        await message.channel.send("{} You need to be in a server to use this command.".format(message.author.mention))
 
 async def set_starboard_requirement(client, message):
     # Set the number of reactions necessary before starring.
@@ -341,20 +341,20 @@ async def set_starboard_requirement(client, message):
             try:
                 star_count = int(re.sub("^\$\S+ ", "", re.sub("\s+$", "",  message.content)))
             except:
-                await client.send(message.channel, "{} Sorry, that's not an integer!".format(message.author.mention))
+                await message.channel.send("{} Sorry, that's not an integer!".format(message.author.mention))
             finally:
                 if star_count >= 1:
                     load_settings()
                     settings = server_has_settings(settings, message)
                     settings[message.guild.id]["star_requirement"] = star_count
                     save_settings(settings)
-                    await client.send(message.channel, "{} Star requirement set to {}".format(message.author.mention, settings[message.guild.id]["star_requirement"]))
+                    await message.channel.send("{} Star requirement set to {}".format(message.author.mention, settings[message.guild.id]["star_requirement"]))
                 else:
-                   await client.send(message.channel, "{} The number of stars required needs to be at least 1.".format(message.author.mention)) 
+                   await message.channel.send("{} The number of stars required needs to be at least 1.".format(message.author.mention)) 
         else:
-            await client.send(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
+            await message.channel.send("{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
     else:
-        await client.send(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
+        await message.channel.send("{} You need to be in a server to use this command.".format(message.author.mention))
 
 async def toggle_self_star(client, message):
     if is_in_server(message):
@@ -366,17 +366,17 @@ async def toggle_self_star(client, message):
             new_settings = server_has_settings(settings, message)
             if re.search("on$", message.content.rstrip()):
                 new_settings[message.guild.id]["self_star"] = True
-                await client.send(message.channel, "{} Self-starring enabled. Users can now star their own posts.".format(message.author.mention))
+                await message.channel.send("{} Self-starring enabled. Users can now star their own posts.".format(message.author.mention))
             elif re.search("off$", message.content.rstrip()):
                 new_settings[message.guild.id]["self_star"] = False
-                await client.send(message.channel, "{} Self-starring disabled. Users can still star their own posts, but it will not count toward the star requirement.".format(message.author.mention))
+                await message.channel.send("{} Self-starring disabled. Users can still star their own posts, but it will not count toward the star requirement.".format(message.author.mention))
             else:
-                await client.send(message.channel, "{} Sorry, you need to specify \"on\" or \"off\"!".format(message.author.mention))
+                await message.channel.send("{} Sorry, you need to specify \"on\" or \"off\"!".format(message.author.mention))
             save_settings(new_settings)
         else:
-            await client.send(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
+            await message.channel.send("{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
     else:
-        await client.send(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
+        await message.channel.send("{} You need to be in a server to use this command.".format(message.author.mention))
 
 async def toggle_welcome(client, message):
     if is_in_server(message):
@@ -388,17 +388,17 @@ async def toggle_welcome(client, message):
             new_settings = server_has_settings(settings, message)
             if re.search("on$", message.content.rstrip()):
                 new_settings[message.guild.id]["use_welcome"] = True
-                await client.send(message.channel, "{} Welcome message enabled. Welcome message is currently set to `{}`.".format(message.author.mention, settings[message.guild.id]["welcome_message"]))
+                await message.channel.send("{} Welcome message enabled. Welcome message is currently set to `{}`.".format(message.author.mention, settings[message.guild.id]["welcome_message"]))
             elif re.search("off$", message.content.rstrip()):
                 new_settings[message.guild.id]["use_welcome"] = False
-                await client.send(message.channel, "{} Welcome message disabled.".format(message.author.mention))
+                await message.channel.send("{} Welcome message disabled.".format(message.author.mention))
             else:
-                await client.send(message.channel, "{} Sorry, you need to specify \"on\" or \"off\"!".format(message.author.mention))
+                await message.channel.send("{} Sorry, you need to specify \"on\" or \"off\"!".format(message.author.mention))
             save_settings(new_settings)
         else:
-            await client.send(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
+            await message.channel.send("{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
     else:
-        await client.send(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
+        await message.channel.send("{} You need to be in a server to use this command.".format(message.author.mention))
 
 async def set_welcome_channel(client, message):
     # Set the channel to send welcome messages in.
@@ -410,18 +410,18 @@ async def set_welcome_channel(client, message):
                 # Get the name of the channel - that should be all we need
                 welcome_channel = message.guild.get_channel(re.sub("[\<\#\>]", "", re.findall("<#[0-9]+>", message.content)[0])).name
             else:
-                await client.send(message.channel, "{} Please specify a welcome channel by typing `#name_of_channel`.".format(message.author.mention))
+                await message.channel.send("{} Please specify a welcome channel by typing `#name_of_channel`.".format(message.author.mention))
                 return False
             
             load_settings()
             settings = server_has_settings(settings, message)
             settings[message.guild.id]["welcome_channel"] = welcome_channel
             save_settings(settings)
-            await client.send(message.channel, "{} Welcome channel set to {}".format(message.author.mention, settings[message.guild.id]["welcome_channel"]))
+            await message.channel.send("{} Welcome channel set to {}".format(message.author.mention, settings[message.guild.id]["welcome_channel"]))
         else:
-            await client.send(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
+            await message.channel.send("{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
     else:
-        await client.send(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
+        await message.channel.send("{} You need to be in a server to use this command.".format(message.author.mention))
 
 async def set_welcome_message(client, message):
     # Set the number of reactions necessary before starring.
@@ -435,11 +435,11 @@ async def set_welcome_message(client, message):
             settings = server_has_settings(settings, message)
             settings[message.guild.id]["welcome_message"] = welcome_message
             save_settings(settings)
-            await client.send(message.channel, "{} Welcome message set to `{}`".format(message.author.mention, settings[message.guild.id]["welcome_message"]))
+            await message.channel.send("{} Welcome message set to `{}`".format(message.author.mention, settings[message.guild.id]["welcome_message"]))
         else:
-            await client.send(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
+            await message.channel.send("{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
     else:
-        await client.send(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
+        await message.channel.send("{} You need to be in a server to use this command.".format(message.author.mention))
 
 async def toggle_leave(client, message):
     if is_in_server(message):
@@ -451,17 +451,17 @@ async def toggle_leave(client, message):
             new_settings = server_has_settings(settings, message)
             if re.search("on$", message.content.rstrip()):
                 new_settings[message.guild.id]["use_leave"] = True
-                await client.send(message.channel, "{} Leaving message enabled. Leaving message is currently set to `{}`.".format(message.author.mention, settings[message.guild.id]["leave_message"]))
+                await message.channel.send("{} Leaving message enabled. Leaving message is currently set to `{}`.".format(message.author.mention, settings[message.guild.id]["leave_message"]))
             elif re.search("off$", message.content.rstrip()):
                 new_settings[message.guild.id]["use_leave"] = False
-                await client.send(message.channel, "{} Leaving message disabled.".format(message.author.mention))
+                await message.channel.send("{} Leaving message disabled.".format(message.author.mention))
             else:
-                await client.send(message.channel, "{} Sorry, you need to specify \"on\" or \"off\"!".format(message.author.mention))
+                await message.channel.send("{} Sorry, you need to specify \"on\" or \"off\"!".format(message.author.mention))
             save_settings(new_settings)
         else:
-            await client.send(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
+            await message.channel.send("{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
     else:
-        await client.send(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
+        await message.channel.send("{} You need to be in a server to use this command.".format(message.author.mention))
 
 async def set_leave_channel(client, message):
     # Set the channel to send leave messages in.
@@ -473,18 +473,18 @@ async def set_leave_channel(client, message):
                 # Get the name of the channel - that should be all we need
                 leave_channel = message.guild.get_channel(re.sub("[\<\#\>]", "", re.findall("<#[0-9]+>", message.content)[0])).name
             else:
-                await client.send(message.channel, "{} Please specify a leave channel by typing `#name_of_channel`.".format(message.author.mention))
+                await message.channel.send("{} Please specify a leave channel by typing `#name_of_channel`.".format(message.author.mention))
                 return False
             
             load_settings()
             settings = server_has_settings(settings, message)
             settings[message.guild.id]["leave_channel"] = leave_channel
             save_settings(settings)
-            await client.send(message.channel, "{} Leaving message channel set to {}".format(message.author.mention, settings[message.guild.id]["leave_channel"]))
+            await message.channel.send("{} Leaving message channel set to {}".format(message.author.mention, settings[message.guild.id]["leave_channel"]))
         else:
-            await client.send(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
+            await message.channel.send("{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
     else:
-        await client.send(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
+        await message.channel.send("{} You need to be in a server to use this command.".format(message.author.mention))
 
 async def set_leave_message(client, message):
     # Set the number of reactions necessary before starring.
@@ -498,11 +498,11 @@ async def set_leave_message(client, message):
             settings = server_has_settings(settings, message)
             settings[message.guild.id]["leave_message"] = leave_message
             save_settings(settings)
-            await client.send(message.channel, "{} Leaving message set to `{}`".format(message.author.mention, settings[message.guild.id]["leave_message"]))
+            await message.channel.send("{} Leaving message set to `{}`".format(message.author.mention, settings[message.guild.id]["leave_message"]))
         else:
-            await client.send(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
+            await message.channel.send("{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
     else:
-        await client.send(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
+        await message.channel.send("{} You need to be in a server to use this command.".format(message.author.mention))
 
 async def show_settings(client, message):
     if is_in_server(message):
@@ -545,11 +545,11 @@ async def show_settings(client, message):
                 settings_display += "Logging: Enabled\nLog Channel: {}".format(settings[message.guild.id]["log_channel"])
             else:
                 settings_display += "Logging: Disabled\n"
-            await client.send(message.channel, settings_display)
+            await message.channel.send(settings_display)
         else:
-            await client.send(message.channel, "{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
+            await message.channel.send("{} Sorry, you don't have permission to edit settings.".format(message.author.mention))
     else:
-        await client.send(message.channel, "{} You need to be in a server to use this command.".format(message.author.mention))
+        await message.channel.send("{} You need to be in a server to use this command.".format(message.author.mention))
 
 # Add the commands to the global command table.
 def setup_command_table(table):

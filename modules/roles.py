@@ -14,14 +14,14 @@ def load_settings():
 
 def is_in_server(message):
     # Check if we're in a server.
-    return message.server is not None
+    return message.guild is not None
 
 async def give_role(client, message):
     # Gives a user a role.
     if is_in_server(message):
         load_settings()
         # Grab the list of roles - they're just plaintext names
-        allowed_roles = settings[message.server.id]["allowed_roles"]
+        allowed_roles = settings[message.guild.id]["allowed_roles"]
         allowed_roles.sort()
         role_list = ""
         for role in allowed_roles:
@@ -35,7 +35,7 @@ async def give_role(client, message):
         if not role_name in allowed_roles:
             await client.send_message(message.channel, ":warning: Sorry, that's not an available role. Available roles are:\n{}".format(role_list))
         else:
-            role = discord.utils.get(message.server.roles, name=role_name)
+            role = discord.utils.get(message.guild.roles, name=role_name)
             if role:
                 if not role in message.author.roles:
                     try:
@@ -56,7 +56,7 @@ async def list_roles(client, message):
     if is_in_server(message):
         load_settings()
         # Grab the list of roles - they're just plaintext names
-        allowed_roles = settings[message.server.id]["allowed_roles"]
+        allowed_roles = settings[message.guild.id]["allowed_roles"]
         allowed_roles.sort()
         role_list = ""
         for role in allowed_roles:
@@ -71,7 +71,7 @@ async def remove_role(client, message):
     if is_in_server(message):
         load_settings()
         # Grab the list of roles - they're just plaintext names
-        allowed_roles = settings[message.server.id]["allowed_roles"]
+        allowed_roles = settings[message.guild.id]["allowed_roles"]
         allowed_roles.sort()
         role_list = ""
         for role in allowed_roles:
@@ -85,7 +85,7 @@ async def remove_role(client, message):
         if not role_name in allowed_roles:
             await client.send_message(message.channel, ":warning: Sorry, that's not an available role. Available roles are:\n{}".format(role_list))
         else:
-            role = discord.utils.get(message.server.roles, name=role_name)
+            role = discord.utils.get(message.guild.roles, name=role_name)
             if role:
                 if role in message.author.roles:
                     try:

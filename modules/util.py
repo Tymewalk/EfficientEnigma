@@ -8,7 +8,7 @@ async def ping(client, message):
     async with aiosession.get('https://discordapp.com'):
         duration = time.time() - start
     duration = round(duration * 1000)
-    await client.send_message(message.channel, "{} :ping_pong: Pong! (**{}ms**)".format(message.author.mention, duration))
+    await message.channel.send("{} :ping_pong: Pong! (**{}ms**)".format(message.author.mention, duration))
     aiosession.close()
 
 # Add the commands to the global command table.

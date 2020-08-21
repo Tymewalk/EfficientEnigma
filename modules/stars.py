@@ -19,24 +19,24 @@ async def check_for_starring(client, reaction, user):
      global starred_messages
      load_settings()
      message = reaction.message
-     if settings[message.server.id]["use_stars"]:
-        star_channel = settings[message.server.id]["star_channel"]
+     if settings[str(message.guild.id)]["use_stars"]:
+        star_channel = settings[str(message.guild.id)]["star_channel"]
         if not message in starred_messages:
              reactions = 0 
-             for e in message.reactions:
-                if e.emoji == settings[message.server.id]["star_emoji"]:
-                    reaction_users = await client.get_reaction_users(e)
+             for reaction in message.reactions:
+                if reaction.emoji == settings[str(message.guild.id)]["star_emoji"]:
+                    reaction_users = await reaction.users().flatten()
                     # Make sure the author is in before removing them, or the program crashes
-                    if not settings[message.server.id]["self_star"] and message.author in reaction_users:
+                    if not settings[str(message.guild.id)]["self_star"] and message.author in reaction_users:
                         reaction_users.remove(message.author)
                     reactions = len(reaction_users)
-             if reactions >= settings[message.server.id]['star_requirement']:
+             if reactions >= settings[str(message.guild.id)]['star_requirement']:
                  starred_messages.append(message)
                  if message.attachments:
-                    filename = message.attachments[0]["filename"]
-                    await client.send_file(discord.utils.get(message.server.channels, name=star_channel, type=discord.ChannelType.text), io.BytesIO(requests.get(message.attachments[0]["proxy_url"]).content), filename=filename, content="{}\n{} said in {}:\n{}\n".format(message.timestamp.strftime("%Y-%m-%d %H:%M:%S UTC"), message.author.mention, str(message.channel), message.content))
+                    filename = message.attachments[0].filename
+                    await discord.utils.get(message.guild.channels, name=star_channel, type=discord.ChannelType.text).send( "{}\n{} said in {}:\n{}\n".format(message.created_at.strftime("%Y-%m-%d %H:%M:%S UTC"), message.author.mention, str(message.channel), message.content), file=discord.File(io.BytesIO(requests.get(message.attachments[0].proxy_url).content), filename=filename))
                  else:
-                    await client.send_message(discord.utils.get(message.server.channels, name=star_channel, type=discord.ChannelType.text), "{}\n{} said in {}:\n{}\n".format(message.timestamp.strftime("%Y-%m-%d %H:%M:%S UTC"), message.author.mention, str(message.channel), message.content))
+                    await discord.utils.get(message.guild.channels, name=star_channel, type=discord.ChannelType.text).send("{}\n{} said in {}:\n{}\n".format(message.created_at.strftime("%Y-%m-%d %H:%M:%S UTC"), message.author.mention, str(message.channel), message.content))
 
 # Now setup
 def setup_hooks(hooktable):

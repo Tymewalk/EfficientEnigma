@@ -8,7 +8,6 @@ pagetext = """Type !help (page number) to see that page's commands.
 2 - Roles"""
 
 generictext = """**Generic Commands**
-!nostalgia - Look at past messages from different channels, and relive the moment.
 !8ball - Ask a question, get an answer!
 !roll - Rolls dice. Submit in XdY.
 !ping - Simple ping. That's all.

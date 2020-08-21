@@ -93,12 +93,12 @@ async def set_up_defaults(client, message):
             settings[str(message.guild.id)]["welcome_channel"] = "welcome"
             changed = True
         if not "welcome_message" in settings[str(message.guild.id)]:
-            settings[str(message.guild.id)]["welcome_message"] = "<ping> Welcome to our server, <name>!"
+            settings[str(message.guild.id)]["welcome_message"] = "<ping> Welcome to the server, <name>!"
         if not "use_leave" in settings[str(message.guild.id)]:
             settings[str(message.guild.id)]["use_leave"] = False
             changed = True
         if not "leave_message" in settings[str(message.guild.id)]:
-            settings[str(message.guild.id)]["leave_message"] = "What a shame, <name> just left the server..."
+            settings[str(message.guild.id)]["leave_message"] = "<name> has left the server."
             changed = True
         if not "leave_channel" in settings[str(message.guild.id)]:
             settings[str(message.guild.id)]["leave_channel"] = "welcome"

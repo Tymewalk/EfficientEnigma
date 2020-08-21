@@ -21,7 +21,7 @@ async def give_role(client, message):
     if is_in_server(message):
         load_settings()
         # Grab the list of roles - they're just plaintext names
-        allowed_roles = settings[message.guild.id]["allowed_roles"]
+        allowed_roles = settings[str(message.guild.id)]["allowed_roles"]
         allowed_roles.sort()
         role_list = ""
         for role in allowed_roles:
@@ -56,7 +56,7 @@ async def list_roles(client, message):
     if is_in_server(message):
         load_settings()
         # Grab the list of roles - they're just plaintext names
-        allowed_roles = settings[message.guild.id]["allowed_roles"]
+        allowed_roles = settings[str(message.guild.id)]["allowed_roles"]
         allowed_roles.sort()
         role_list = ""
         for role in allowed_roles:
@@ -71,7 +71,7 @@ async def remove_role(client, message):
     if is_in_server(message):
         load_settings()
         # Grab the list of roles - they're just plaintext names
-        allowed_roles = settings[message.guild.id]["allowed_roles"]
+        allowed_roles = settings[str(message.guild.id)]["allowed_roles"]
         allowed_roles.sort()
         role_list = ""
         for role in allowed_roles:

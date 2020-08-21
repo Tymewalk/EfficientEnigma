@@ -39,7 +39,7 @@ async def give_role(client, message):
             if role:
                 if not role in message.author.roles:
                     try:
-                        await client.add_roles(message.author, role)
+                        await message.author.add_roles(role)
                         await message.channel.send(":white_check_mark: Successfully added role {0}".format(role.name))
                     except discord.Forbidden as e:
                         await message.channel.send(":no_entry: I don't have permission to add that role, even though it's in the allowed roles list.\nPlease notify the bot admin.")
@@ -89,7 +89,7 @@ async def remove_role(client, message):
             if role:
                 if role in message.author.roles:
                     try:
-                        await client.remove_roles(message.author, role)
+                        await message.author.remove_roles(role)
                         await message.channel.send(":white_check_mark: Successfully removed role {0}".format(role.name))
                     except discord.Forbidden as e:
                         await message.channel.send(":no_entry: I don't have permission to remove that role, even though it's in the allowed roles list.\nPlease notify the server's administrators.")

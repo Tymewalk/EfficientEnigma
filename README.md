@@ -10,17 +10,17 @@ Step 1: Clone the repository:
     
 Step 2: Install dependencies:
 
-    pip3 install -r requirements.txt
+    python3 -m pip install -r requirements.txt
     
 Step 3: Set up the bot:
 
-    python3.5 config.py
+    python3 config.py
 
 You will be prompted for your bot's token.
 
 Step 4: Run the bot:
 
-    python3.5 bot.py
+    python3 bot.py
 
 ## Configuration
 Anyone with a role titled "EfficientEnigma Admin" may use the bot's internal configuration commands to set up the bot for their server.

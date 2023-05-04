@@ -51,7 +51,10 @@ modules.server_config.setup_hooks(hook_table)
 modules.stars.setup_hooks(hook_table)
 modules.welcome.setup_hooks(hook_table)
 
-client = discord.Client()
+intents = discord.Intents.default()
+intents.message_content = True
+
+client = discord.Client(intents=intents)
 
 bot_token = settings["token"].lstrip().rstrip()
 

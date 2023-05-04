@@ -2,10 +2,21 @@
 # Houses the main code that the modules run off of.
 import discord, asyncio, os, re, json, aiohttp, time
 
-# Load the settings - we need this for the token
-f = open("{}/{}".format(os.path.dirname(os.path.realpath(__file__)), "settings.json"))
-settings = json.load(f)
-f.close()
+if os.path.isfile("{}/{}".format(os.path.dirname(os.path.realpath(__file__)), "settings.json")): 
+    # Load the settings - we need this for the token
+    f = open("{}/{}".format(os.path.dirname(os.path.realpath(__file__)), "settings.json"))
+    settings = json.load(f)
+    f.close()
+else:
+    # If the settings file doesn't exist, ask the user for the bot's token
+    token = input("Enter your bot's token: ")
+
+    settings = dict()
+
+    settings["token"] = token
+    f = open("{}/{}".format(os.path.dirname(os.path.realpath(__file__)), "settings.json"), 'w')
+    json.dump(settings, f)
+    f.close()
 
 # This contains all the commands.
 # Commands are in the format of ("command" : function) in the table.
